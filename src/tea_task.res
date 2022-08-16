@@ -1,7 +1,7 @@
 type never
 
 type rec t<'succeed, 'fail> =
-  | Task((Tea_result.t<'succeed, 'fail> => unit) => unit): t<'succeed, 'fail>
+  | Task((Belt.Result.t<'succeed, 'fail> => unit) => unit): t<'succeed, 'fail>
 
 let nothing = () => ()
 
@@ -32,7 +32,7 @@ let perform = (toMessage: 'value => 'msg, task: t<'value, never>): Tea_cmd.t<'ms
   performOpt(v => Some(toMessage(v)), task)
 
 let attemptOpt = (
-  resultToOptionalMessage: Tea_result.t<'succeed, 'fail> => option<'msg>,
+  resultToOptionalMessage: Belt.Result.t<'succeed, 'fail> => option<'msg>,
   Task(task): t<'succeed, 'fail>,
 ): Tea_cmd.t<'msg> =>
   Tea_cmd.call(callbacks => {
@@ -46,17 +46,17 @@ let attemptOpt = (
   })
 
 let attempt = (
-  resultToMessage: Tea_result.t<'succeed, 'fail> => 'msg,
+  resultToMessage: Belt.Result.t<'succeed, 'fail> => 'msg,
   task: t<'succeed, 'fail>,
 ): Tea_cmd.t<'msg> => attemptOpt(v => Some(resultToMessage(v)), task)
 
 let ignore = task => attemptOpt(_ => None, task)
 
-let succeed = (value: 'v): t<'v, 'e> => Task(cb => cb(Tea_result.Ok(value)))
+let succeed = (value: 'v): t<'v, 'e> => Task(cb => cb(Belt.Result.Ok(value)))
 
-let fail = (value: 'v): t<'e, 'v> => Task(cb => cb(Tea_result.Error(value)))
+let fail = (value: 'v): t<'e, 'v> => Task(cb => cb(Belt.Result.Error(value)))
 
-let nativeBinding = (func: (Tea_result.t<'succeed, 'fail> => unit) => unit): t<
+let nativeBinding = (func: (Belt.Result.t<'succeed, 'fail> => unit) => unit): t<
   'succeed,
   'fail,
 > => Task(func)
@@ -91,10 +91,10 @@ let onError = (fn, Task(task)) => {
   )
 }
 
-let fromResult: Tea_result.t<'success, 'failure> => t<'success, 'failure> = x =>
+let fromResult: Belt.Result.t<'success, 'failure> => t<'success, 'failure> = x =>
   switch x {
-  | Tea_result.Ok(s) => succeed(s)
-  | Tea_result.Error(err) => fail(err)
+  | Belt.Result.Ok(s) => succeed(s)
+  | Belt.Result.Error(err) => fail(err)
   }
 
 let mapError = (func, task) => task |> onError(e => fail(func(e)))
