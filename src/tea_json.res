@@ -3,16 +3,16 @@ module Decoder = {
 
   module ObjectDict = Map.Make(String)
 
-  type t<'input, 'result> = Decoder('input => Tea_result.t<'result, error>)
+  type t<'input, 'result> = Decoder('input => Belt.Result.t<'result, error>)
   /* 
-    | Parser : (Web.Json.t -> ('result, error) Tea_result.t) -> ('result, error) Tea_result.t t
+    | Parser : (Web.Json.t -> ('result, error) Belt.Result.t) -> ('result, error) Belt.Result.t t
  */
   /* 
-    | Value : (Web.Json.t, error) Tea_result.t t
-    | Succeed : 'result -> ('result, error) Tea_result.t t
-    | Fail : error -> (_, error) Tea_result.t t
-    | Null : 'result -> ('result, error) Tea_result.t t
-    | String : (string, error) Tea_result.t t
+    | Value : (Web.Json.t, error) Belt.Result.t t
+    | Succeed : 'result -> ('result, error) Belt.Result.t t
+    | Fail : error -> (_, error) Belt.Result.t t
+    | Null : 'result -> ('result, error) Belt.Result.t t
+    | String : (string, error) Belt.Result.t t
  */
 
   exception ParseFail(string)
@@ -23,8 +23,8 @@ module Decoder = {
     value => {
       open Web.Json
       switch classify(value) {
-      | JSONString(s) => Tea_result.Ok(s)
-      | _ => Tea_result.Error("Non-string value")
+      | JSONString(s) => Belt.Result.Ok(s)
+      | _ => Belt.Result.Error("Non-string value")
       }
     },
   )
@@ -35,11 +35,11 @@ module Decoder = {
       switch classify(value) {
       | JSONNumber(n) =>
         if n > float_of_int(min_int) && n < float_of_int(max_int) {
-          Tea_result.Ok(int_of_float(n))
+          Belt.Result.Ok(int_of_float(n))
         } else {
-          Tea_result.Error("number out of int range")
+          Belt.Result.Error("number out of int range")
         }
-      | _ => Tea_result.Error("Non-int value")
+      | _ => Belt.Result.Error("Non-int value")
       }
     },
   )
@@ -48,8 +48,8 @@ module Decoder = {
     value => {
       open Web.Json
       switch classify(value) {
-      | JSONNumber(n) => Tea_result.Ok(n)
-      | _ => Tea_result.Error("Non-float-value")
+      | JSONNumber(n) => Belt.Result.Ok(n)
+      | _ => Belt.Result.Error("Non-float-value")
       }
     },
   )
@@ -58,9 +58,9 @@ module Decoder = {
     value => {
       open Web.Json
       switch classify(value) {
-      | JSONTrue => Tea_result.Ok(true)
-      | JSONFalse => Tea_result.Ok(false)
-      | _ => Tea_result.Error("Non-boolean value")
+      | JSONTrue => Belt.Result.Ok(true)
+      | JSONFalse => Belt.Result.Ok(false)
+      | _ => Belt.Result.Error("Non-boolean value")
       }
     },
   )
@@ -69,8 +69,8 @@ module Decoder = {
     value => {
       open Web.Json
       switch classify(value) {
-      | JSONNull => Tea_result.Ok(v)
-      | _ => Tea_result.Error("Non-null value")
+      | JSONNull => Belt.Result.Ok(v)
+      | _ => Belt.Result.Error("Non-null value")
       }
     },
   )
@@ -84,13 +84,13 @@ module Decoder = {
       | JSONArray(a) =>
         let parse = v =>
           switch decoder(v) {
-          | Tea_result.Ok(r) => r
-          | Tea_result.Error(e) => raise(ParseFail(e))
+          | Belt.Result.Ok(r) => r
+          | Belt.Result.Error(e) => raise(ParseFail(e))
           }
-        try Tea_result.Ok(Array.to_list(a) |> List.map(parse)) catch {
-        | ParseFail(e) => Tea_result.Error("list -> " ++ e)
+        try Belt.Result.Ok(Array.to_list(a) |> List.map(parse)) catch {
+        | ParseFail(e) => Belt.Result.Error("list -> " ++ e)
         }
-      | _ => Tea_result.Error("Non-list value")
+      | _ => Belt.Result.Error("Non-list value")
       }
     },
   )
@@ -102,13 +102,13 @@ module Decoder = {
       | JSONArray(a) =>
         let parse = v =>
           switch decoder(v) {
-          | Tea_result.Ok(r) => r
-          | Tea_result.Error(e) => raise(ParseFail(e))
+          | Belt.Result.Ok(r) => r
+          | Belt.Result.Error(e) => raise(ParseFail(e))
           }
-        try Tea_result.Ok(Array.map(parse, a)) catch {
-        | ParseFail(e) => Tea_result.Error("array -> " ++ e)
+        try Belt.Result.Ok(Array.map(parse, a)) catch {
+        | ParseFail(e) => Belt.Result.Error("array -> " ++ e)
         }
-      | _ => Tea_result.Error("Non-array value")
+      | _ => Belt.Result.Error("Non-array value")
       }
     },
   )
@@ -124,14 +124,14 @@ module Decoder = {
           | None => raise(ParseFail("Key is undefined: " ++ k))
           | Some(v) =>
             switch decoder(v) {
-            | Tea_result.Ok(r) => list{(k, r), ...l}
-            | Tea_result.Error(e) => raise(ParseFail(e))
+            | Belt.Result.Ok(r) => list{(k, r), ...l}
+            | Belt.Result.Error(e) => raise(ParseFail(e))
             }
           }
-        try Tea_result.Ok(Array.fold_right(parse, keys, list{})) catch {
-        | ParseFail(e) => Tea_result.Error("Invalid keyValuePair parsing: " ++ e)
+        try Belt.Result.Ok(Array.fold_right(parse, keys, list{})) catch {
+        | ParseFail(e) => Belt.Result.Error("Invalid keyValuePair parsing: " ++ e)
         }
-      | _ => Tea_result.Error("Non-keyValuePair value")
+      | _ => Belt.Result.Error("Non-keyValuePair value")
       }
     },
   )
@@ -147,15 +147,15 @@ module Decoder = {
           | None => raise(ParseFail("Key is undefined: " ++ k))
           | Some(v) =>
             switch decoder(v) {
-            | Tea_result.Ok(r) => ObjectDict.add(k, r, d)
-            | Tea_result.Error(e) => raise(ParseFail(e))
+            | Belt.Result.Ok(r) => ObjectDict.add(k, r, d)
+            | Belt.Result.Error(e) => raise(ParseFail(e))
             }
           }
         let emptyDict = ObjectDict.empty
-        try Tea_result.Ok(Array.fold_right(parse, keys, emptyDict)) catch {
-        | ParseFail(e) => Tea_result.Error("Invalid dict parsing: " ++ e)
+        try Belt.Result.Ok(Array.fold_right(parse, keys, emptyDict)) catch {
+        | ParseFail(e) => Belt.Result.Error("Invalid dict parsing: " ++ e)
         }
-      | _ => Tea_result.Error("Non-dict value")
+      | _ => Belt.Result.Error("Non-dict value")
       }
     },
   )
@@ -166,14 +166,14 @@ module Decoder = {
       switch classify(value) {
       | JSONObject(o) =>
         switch Js.Dict.get(o, key) {
-        | None => Tea_result.Error("Field Value is undefined: " ++ key)
+        | None => Belt.Result.Error("Field Value is undefined: " ++ key)
         | Some(v) =>
           switch decoder(v) {
           | Ok(_) as o => o
           | Error(e) => Error("field `" ++ (key ++ ("` -> " ++ e)))
           }
         }
-      | _ => Tea_result.Error("Non-fieldable value")
+      | _ => Belt.Result.Error("Non-fieldable value")
       }
     },
   )
@@ -186,11 +186,11 @@ module Decoder = {
       switch classify(value) {
       | JSONArray(a) =>
         if idx < 0 || idx > Array.length(a) {
-          Tea_result.Error("Array index out of range: " ++ string_of_int(idx))
+          Belt.Result.Error("Array index out of range: " ++ string_of_int(idx))
         } else {
           decoder(a[idx])
         }
-      | _ => Tea_result.Error("Non-array value")
+      | _ => Belt.Result.Error("Non-array value")
       }
     },
   )
@@ -198,8 +198,8 @@ module Decoder = {
   let maybe = (Decoder(decoder)) => Decoder(
     value =>
       switch decoder(value) {
-      | Tea_result.Ok(r) => Tea_result.Ok(Some(r))
-      | Tea_result.Error(_) => Tea_result.Ok(None)
+      | Belt.Result.Ok(r) => Belt.Result.Ok(Some(r))
+      | Belt.Result.Error(_) => Belt.Result.Ok(None)
       },
   )
 
@@ -207,11 +207,11 @@ module Decoder = {
     value => {
       let rec parse = (v, x) =>
         switch x {
-        | list{} => Tea_result.Error("No one-of's matched")
+        | list{} => Belt.Result.Error("No one-of's matched")
         | list{Decoder(decoder), ...rest} =>
           try switch decoder(v) {
-          | Tea_result.Ok(_) as ok => ok
-          | Tea_result.Error(_) => parse(v, rest)
+          | Belt.Result.Ok(_) as ok => ok
+          | Belt.Result.Error(_) => parse(v, rest)
           } catch {
           | _ => parse(v, rest)
           }
@@ -409,19 +409,19 @@ module Decoder = {
 
   /* Fancy Primitives */
 
-  let succeed = v => Decoder(_value => Tea_result.Ok(v))
+  let succeed = v => Decoder(_value => Belt.Result.Ok(v))
 
-  let fail = e => Decoder(_value => Tea_result.Error(e))
+  let fail = e => Decoder(_value => Belt.Result.Error(e))
 
-  let value = Decoder(value => Tea_result.Ok(value))
+  let value = Decoder(value => Belt.Result.Ok(value))
 
   let andThen = (func, Decoder(decoder)) => Decoder(
     value =>
       switch decoder(value) {
-      | Tea_result.Ok(r) =>
+      | Belt.Result.Ok(r) =>
         let Decoder(andThenDecoder) = func(r)
         andThenDecoder(value)
-      | Tea_result.Error(_) as err => err
+      | Belt.Result.Error(_) as err => err
       },
   )
 
@@ -434,14 +434,14 @@ module Decoder = {
   /* TODO:  Constrain this value type more */
   let decodeValue = (Decoder(decoder), value) =>
     try decoder(value) catch {
-    | ParseFail(e) => Tea_result.Error(e)
-    | _ => Tea_result.Error("Unknown JSON parsing error")
+    | ParseFail(e) => Belt.Result.Error(e)
+    | _ => Belt.Result.Error("Unknown JSON parsing error")
     }
 
   let decodeEvent = (Decoder(decoder), value: Web_node.event) =>
     try decoder(Obj.magic(value)) catch {
-    | ParseFail(e) => Tea_result.Error(e)
-    | _ => Tea_result.Error("Unknown JSON parsing error")
+    | ParseFail(e) => Belt.Result.Error(e)
+    | _ => Belt.Result.Error("Unknown JSON parsing error")
     }
 
   let decodeString = (decoder, string) =>
@@ -449,8 +449,8 @@ module Decoder = {
       let value = Web.Json.parseExn(string)
       decodeValue(decoder, value)
     } catch {
-    /* | JsException e -> Tea_result.Error ("Given an invalid JSON: " ^ e) */
-    | _ => Tea_result.Error("Invalid JSON string")
+    /* | JsException e -> Belt.Result.Error ("Given an invalid JSON: " ^ e) */
+    | _ => Belt.Result.Error("Invalid JSON string")
     }
 }
 

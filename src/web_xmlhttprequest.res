@@ -101,7 +101,7 @@ type body =
 
 let abort = (x: t): unit => abort(x)
 
-let getAllResponseHeaders = (x: t): Tea_result.t<string, errors> => {
+let getAllResponseHeaders = (x: t): Belt.Result.t<string, errors> => {
   open Tea_result
   switch Js.Null.toOption(getAllResponseHeaders(x)) {
   | None => Error(IncompleteResponse)
@@ -110,7 +110,7 @@ let getAllResponseHeaders = (x: t): Tea_result.t<string, errors> => {
   }
 }
 
-let getAllResponseHeadersAsList = (x: t): Tea_result.t<list<(string, string)>, errors> => {
+let getAllResponseHeadersAsList = (x: t): Belt.Result.t<list<(string, string)>, errors> => {
   open Tea_result
   switch getAllResponseHeaders(x) {
   | Error(_) as err => err
@@ -131,13 +131,13 @@ let getAllResponseHeadersAsList = (x: t): Tea_result.t<list<(string, string)>, e
   }
 }
 
-let getAllResponseHeadersAsDict = (x: t): Tea_result.t<Belt.Map.String.t<string>, errors> => {
+let getAllResponseHeadersAsDict = (x: t): Belt.Result.t<Belt.Map.String.t<string>, errors> => {
   module StringMap = Belt.Map.String
   switch getAllResponseHeadersAsList(x) {
-  | Tea_result.Error(_) as err => err
-  | Tea_result.Ok(l) =>
+  | Belt.Result.Error(_) as err => err
+  | Belt.Result.Ok(l) =>
     let insert = (d, (k, v)) => StringMap.set(d,k, v)
-    Tea_result.Ok(List.fold_left(insert, StringMap.empty, l))
+    Belt.Result.Ok(List.fold_left(insert, StringMap.empty, l))
   }
 }
 
