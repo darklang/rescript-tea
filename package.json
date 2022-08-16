@@ -36,7 +36,7 @@
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "bs-platform": "^7.1.1",
+    "rescript": "^9.1",
     "npm-run-all": "4.0.2",
     "pre-commit": "^1.2.0",
     "watchify": "^3.11.1"
