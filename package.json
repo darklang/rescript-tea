@@ -1,22 +1,23 @@
+
 {
-  "name": "bucklescript-tea",
+  "name": "rescript-tea",
   "version": "0.15.0",
   "description": "TEA for Bucklescript",
   "main": "index.js",
   "scripts": {
-    "clean": "bsb clean",
-    "clean:all": "bsb -clean-world",
-    "build": "bsb",
-    "build:all": "bsb -make-world",
-    "watch": "bsb -w",
+    "clean": "rescript clean",
+    "clean:all": "rescript -clean-world",
+    "build": "rescript",
+    "build:all": "rescript clean -with-deps",
+    "watch": "rescript -w",
     "build:test:client": "browserify --standalone=Test_client --outfile=lib/js/test-ocaml/app_test_client.js lib/js/test-ocaml/test_client.js",
     "watch:test:client": "watchify --standalone=Test_client --outfile=lib/js/test-ocaml/app_test_client.js lib/js/test-ocaml/test_client.js",
     "watch:test": "run-p watch watch:test:*",
     "prebuild:test": "run-s build",
     "build:test": "run-p build:test:*",
     "pretest": "run-s build:test",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dual-syntax": "bin/dual-syntax"
+    "test": "echo \"Error: no test specified\" && exit 1"
+    
   },
   "repository": {
     "type": "git",
@@ -35,12 +36,13 @@
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "bs-platform": "^7.1.1",
+    "rescript": "^9.1",
     "npm-run-all": "4.0.2",
     "pre-commit": "^1.2.0",
     "watchify": "^3.11.1"
   },
-  "pre-commit": [
-    "dual-syntax"
-  ]
+    "dependencies": {
+    "rescript-webapi": "^0.6.1"
+  }
+ 
 }
