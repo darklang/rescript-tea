@@ -101,7 +101,7 @@ type body =
 
 let abort = (x: t): unit => abort(x)
 
-let getAllResponseHeaders = (x: t): Belt.Result.t<string, errors> => {
+let getAllResponseHeaders = (x: t): result<string, errors> => {
   switch Js.Null.toOption(getAllResponseHeaders(x)) {
   | None => Error(IncompleteResponse)
   | Some("") => Error(NetworkError)
@@ -109,7 +109,7 @@ let getAllResponseHeaders = (x: t): Belt.Result.t<string, errors> => {
   }
 }
 
-let getAllResponseHeadersAsList = (x: t): Belt.Result.t<list<(string, string)>, errors> => {
+let getAllResponseHeadersAsList = (x: t): result<list<(string, string)>, errors> => {
   switch getAllResponseHeaders(x) {
   | Error(_) as err => err
   | Ok(s) =>
@@ -129,13 +129,13 @@ let getAllResponseHeadersAsList = (x: t): Belt.Result.t<list<(string, string)>, 
   }
 }
 
-let getAllResponseHeadersAsDict = (x: t): Belt.Result.t<Belt.Map.String.t<string>, errors> => {
+let getAllResponseHeadersAsDict = (x: t): result<Belt.Map.String.t<string>, errors> => {
   module StringMap = Belt.Map.String
   switch getAllResponseHeadersAsList(x) {
-  | Belt.Result.Error(_) as err => err
-  | Belt.Result.Ok(l) =>
+  | Error(_) as err => err
+  | Ok(l) =>
     let insert = (d, (k, v)) => StringMap.set(d,k, v)
-    Belt.Result.Ok(List.fold_left(insert, StringMap.empty, l))
+    Ok(List.fold_left(insert, StringMap.empty, l))
   }
 }
 
