@@ -222,7 +222,6 @@ module Decoder = {
 
   let map = (mapper, Decoder(decoder1)) => Decoder(
     value => {
-      open Tea_result
       switch decoder1(value) {
       | Ok(v1) => Ok(mapper(v1))
       | Error(e) => Error("map " ++ e)
@@ -230,13 +229,26 @@ module Decoder = {
     },
   )
 
+let error = x =>
+  switch x {
+  | Ok(_) => None
+  | Error(e) => Some(e)
+  }
+
+let error_of_first = (fst, x) =>
+  switch x {
+  | Error(e) => Some(e)
+  | Ok(_) => error(fst)
+  }
+
+
+
   let map2 = (mapper, Decoder(decoder1), Decoder(decoder2)) => Decoder(
     value => {
-      open Tea_result
       switch (decoder1(value), decoder2(value)) {
       | (Ok(v1), Ok(v2)) => Ok(mapper(v1, v2))
       | (e1, e2) =>
-        switch Tea_result.error_of_first(e1, e2) {
+        switch error_of_first(e1, e2) {
         | None => failwith("Impossible case")
         | Some(e) => Error("map2 -> " ++ e)
         }
@@ -244,13 +256,19 @@ module Decoder = {
     },
   )
 
+  let first = (fst, x) =>
+  switch x {
+  | Error(_) as e => e
+  | Ok(_) => fst
+  }
+
   let map3 = (mapper, Decoder(decoder1), Decoder(decoder2), Decoder(decoder3)) => Decoder(
     value => {
-      open Tea_result
+      
       switch (decoder1(value), decoder2(value), decoder3(value)) {
       | (Ok(v1), Ok(v2), Ok(v3)) => Ok(mapper(v1, v2, v3))
       | (e1, e2, e3) =>
-        open! Tea_result
+        
         switch e1 |> first(e2) |> first(e3) {
         | Ok(_) => failwith("Impossible case")
         | Error(e) => Error("map3 -> " ++ e)
@@ -267,11 +285,10 @@ module Decoder = {
     Decoder(decoder4),
   ) => Decoder(
     value => {
-      open Tea_result
       switch (decoder1(value), decoder2(value), decoder3(value), decoder4(value)) {
       | (Ok(v1), Ok(v2), Ok(v3), Ok(v4)) => Ok(mapper(v1, v2, v3, v4))
       | (e1, e2, e3, e4) =>
-        open! Tea_result
+
         switch e1 |> first(e2) |> first(e3) |> first(e4) {
         | Ok(_) => failwith("Impossible case")
         | Error(e) => Error("map4 -> " ++ e)
@@ -289,11 +306,10 @@ module Decoder = {
     Decoder(decoder5),
   ) => Decoder(
     value => {
-      open Tea_result
       switch (decoder1(value), decoder2(value), decoder3(value), decoder4(value), decoder5(value)) {
       | (Ok(v1), Ok(v2), Ok(v3), Ok(v4), Ok(v5)) => Ok(mapper(v1, v2, v3, v4, v5))
       | (e1, e2, e3, e4, e5) =>
-        open! Tea_result
+
         switch e1 |> first(e2) |> first(e3) |> first(e4) |> first(e5) {
         | Ok(_) => failwith("Impossible case")
         | Error(e) => Error("map5 -> " ++ e)
@@ -312,7 +328,6 @@ module Decoder = {
     Decoder(decoder6),
   ) => Decoder(
     value => {
-      open Tea_result
       switch (
         decoder1(value),
         decoder2(value),
@@ -323,7 +338,7 @@ module Decoder = {
       ) {
       | (Ok(v1), Ok(v2), Ok(v3), Ok(v4), Ok(v5), Ok(v6)) => Ok(mapper(v1, v2, v3, v4, v5, v6))
       | (e1, e2, e3, e4, e5, e6) =>
-        open! Tea_result
+
         switch e1 |> first(e2) |> first(e3) |> first(e4) |> first(e5) |> first(e6) {
         | Ok(_) => failwith("Impossible case")
         | Error(e) => Error("map6 -> " ++ e)
@@ -343,7 +358,6 @@ module Decoder = {
     Decoder(decoder7),
   ) => Decoder(
     value => {
-      open Tea_result
       switch (
         decoder1(value),
         decoder2(value),
@@ -356,7 +370,7 @@ module Decoder = {
       | (Ok(v1), Ok(v2), Ok(v3), Ok(v4), Ok(v5), Ok(v6), Ok(v7)) =>
         Ok(mapper(v1, v2, v3, v4, v5, v6, v7))
       | (e1, e2, e3, e4, e5, e6, e7) =>
-        open! Tea_result
+
         switch e1 |> first(e2) |> first(e3) |> first(e4) |> first(e5) |> first(e6) |> first(e7) {
         | Ok(_) => failwith("Impossible case")
         | Error(e) => Error("map7 -> " ++ e)
@@ -377,7 +391,6 @@ module Decoder = {
     Decoder(decoder8),
   ) => Decoder(
     value => {
-      open Tea_result
       switch (
         decoder1(value),
         decoder2(value),
@@ -391,7 +404,7 @@ module Decoder = {
       | (Ok(v1), Ok(v2), Ok(v3), Ok(v4), Ok(v5), Ok(v6), Ok(v7), Ok(v8)) =>
         Ok(mapper(v1, v2, v3, v4, v5, v6, v7, v8))
       | (e1, e2, e3, e4, e5, e6, e7, e8) =>
-        open! Tea_result
+
         switch e1
         |> first(e2)
         |> first(e3)

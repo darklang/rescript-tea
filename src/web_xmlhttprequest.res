@@ -102,7 +102,6 @@ type body =
 let abort = (x: t): unit => abort(x)
 
 let getAllResponseHeaders = (x: t): Belt.Result.t<string, errors> => {
-  open Tea_result
   switch Js.Null.toOption(getAllResponseHeaders(x)) {
   | None => Error(IncompleteResponse)
   | Some("") => Error(NetworkError)
@@ -111,7 +110,6 @@ let getAllResponseHeaders = (x: t): Belt.Result.t<string, errors> => {
 }
 
 let getAllResponseHeadersAsList = (x: t): Belt.Result.t<list<(string, string)>, errors> => {
-  open Tea_result
   switch getAllResponseHeaders(x) {
   | Error(_) as err => err
   | Ok(s) =>
