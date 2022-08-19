@@ -30,7 +30,7 @@ let result = (promise, msg) => {
         |> Js.Promise.then_(x =>
           switch x {
           | res =>
-            let resolve = enq(Belt.Result.Ok(res))
+            let resolve = enq(Ok(res))
             Js.Promise.resolve(resolve)
           }
         )
@@ -38,7 +38,7 @@ let result = (promise, msg) => {
           switch x {
           | err =>
             let err_to_string = err => j`$err`
-            let reject = enq(Belt.Result.Error(err_to_string(err)))
+            let reject = enq(Error(err_to_string(err)))
             Js.Promise.resolve(reject)
           }
         )

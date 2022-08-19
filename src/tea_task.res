@@ -1,7 +1,7 @@
 type never
 
 type rec t<'succeed, 'fail> =
-  | Task((Belt.Result.t<'succeed, 'fail> => unit) => unit): t<'succeed, 'fail>
+  | Task((result<'succeed, 'fail> => unit) => unit): t<'succeed, 'fail>
 
 let nothing = () => ()
 
@@ -45,7 +45,7 @@ let attemptOpt = (
   })
 
 let attempt = (
-  resultToMessage: Belt.Result.t<'succeed, 'fail> => 'msg,
+  resultToMessage: result<'succeed, 'fail> => 'msg,
   task: t<'succeed, 'fail>,
 ): Tea_cmd.t<'msg> => attemptOpt(v => Some(resultToMessage(v)), task)
 
@@ -88,7 +88,7 @@ let onError = (fn, Task(task)) => {
   )
 }
 
-let fromResult: Belt.Result.t<'success, 'failure> => t<'success, 'failure> = x =>
+let fromResult: result<'success, 'failure> => t<'success, 'failure> = x =>
   switch x {
   | Belt.Result.Ok(s) => succeed(s)
   | Belt.Result.Error(err) => fail(err)
