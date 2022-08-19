@@ -34,7 +34,7 @@ let string_of_error = x =>
 
 type header = Header(string, string)
 
-type expect<'res> = Expect(bodyType, response => Belt.Result.t<'res, string>)
+type expect<'res> = Expect(bodyType, response => result<'res, string>)
 
 type requestEvents<'msg> = {
   onreadystatechange: option<
@@ -69,12 +69,12 @@ let expectStringResponse = func => {
     ({body, _}) =>
       switch body {
       | TextResponse(s) => func(s)
-      | _ => Belt.Result.Error("Non-text response returned")
+      | _ => Error("Non-text response returned")
       },
   )
 }
 
-let expectString = expectStringResponse(resString => Belt.Result.Ok(resString))
+let expectString = expectStringResponse(resString => Ok(resString))
 
 let request = rawRequest => Request(rawRequest, None)
 
@@ -95,8 +95,8 @@ let toTask = (Request(request, _maybeEvents)) => {
   let Expect(typ, responseToResult) = expect
   Tea_task.nativeBinding(cb => {
     let enqRes = (result, _ev) => cb(result)
-    let enqResError = result => enqRes(Belt.Result.Error(result))
-    let enqResOk = result => enqRes(Belt.Result.Ok(result))
+    let enqResError = result => enqRes(Error(result))
+    let enqResOk = result => enqRes(Ok(result))
     let xhr = Web.XMLHttpRequest.create()
     let setEvent = (ev, cb) => ev(cb, xhr)
     let () = setEvent(Web.XMLHttpRequest.set_onerror, enqResError(NetworkError))
@@ -105,8 +105,8 @@ let toTask = (Request(request, _maybeEvents)) => {
     let () = setEvent(Web.XMLHttpRequest.set_onload, _ev => {
       open Web.XMLHttpRequest
       let headers = switch getAllResponseHeadersAsDict(xhr) {
-      | Belt.Result.Error(_e) => Belt.Map.String.empty
-      | Belt.Result.Ok(headers) => headers
+      | Error(_e) => Belt.Map.String.empty
+      | Ok(headers) => headers
       }
       let response = {
         status: {code: get_status(xhr), message: get_statusText(xhr)},
@@ -118,8 +118,8 @@ let toTask = (Request(request, _maybeEvents)) => {
         enqResError(BadStatus(response), ())
       } else {
         switch responseToResult(response) {
-        | Belt.Result.Error(error) => enqResError(BadPayload(error, response), ())
-        | Belt.Result.Ok(result) => enqResOk(result, ())
+        | Error(error) => enqResError(BadPayload(error, response), ())
+        | Ok(result) => enqResOk(result, ())
         }
       }
     })
@@ -149,8 +149,8 @@ let send = (resultToMessage, Request(request, maybeEvents)) => {
       open Vdom
       callbacks.contents.enqueue(resultToMessage(result))
     }
-    let enqResError = result => enqRes(Belt.Result.Error(result))
-    let enqResOk = result => enqRes(Belt.Result.Ok(result))
+    let enqResError = result => enqRes(Error(result))
+    let enqResOk = result => enqRes(Ok(result))
     let xhr = Web.XMLHttpRequest.create()
     let setEvent = (ev, cb) => ev(cb, xhr)
     let () = switch maybeEvents {
@@ -171,8 +171,8 @@ let send = (resultToMessage, Request(request, maybeEvents)) => {
     let () = setEvent(Web.XMLHttpRequest.set_onload, _ev => {
       open Web.XMLHttpRequest
       let headers = switch getAllResponseHeadersAsDict(xhr) {
-      | Belt.Result.Error(_e) => Belt.Map.String.empty
-      | Belt.Result.Ok(headers) => headers
+      | Error(_e) => Belt.Map.String.empty
+      | Ok(headers) => headers
       }
       let response = {
         status: {code: get_status(xhr), message: get_statusText(xhr)},
@@ -184,8 +184,8 @@ let send = (resultToMessage, Request(request, maybeEvents)) => {
         enqResError(BadStatus(response), ())
       } else {
         switch responseToResult(response) {
-        | Belt.Result.Error(error) => enqResError(BadPayload(error, response), ())
-        | Belt.Result.Ok(result) => enqResOk(result, ())
+        | Error(error) => enqResError(BadPayload(error, response), ())
+        | Ok(result) => enqResOk(result, ())
         }
       }
     })
@@ -258,7 +258,6 @@ module Progress = {
         open Vdom
         let lengthComputable = {
           open Tea_json.Decoder
-          open Tea_result
           switch decodeValue(field("lengthComputable", bool), ev) {
           | Error(_e) => false
           | Ok(v) => v
@@ -266,7 +265,6 @@ module Progress = {
         }
         if lengthComputable {
           open Tea_json.Decoder
-          open Tea_result
           let decoder = map2(
             (bytes, bytesExpected) => {bytes: bytes, bytesExpected: bytesExpected},
             field("loaded", int),

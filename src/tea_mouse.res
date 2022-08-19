@@ -14,7 +14,6 @@ let registerGlobal = (name, key, tagger) => {
     let callbacks = ref(callbacks_base)
     let fn = ev => {
       open Tea_json.Decoder
-      open Tea_result
       switch decodeEvent(position, ev) {
       | Error(_) => None
       | Ok(pos) => Some(tagger(pos))

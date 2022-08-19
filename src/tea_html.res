@@ -386,6 +386,12 @@ let defaultOptions = {
   preventDefault: false,
 }
 
+let result_to_option = x =>
+  switch x {
+  | Ok(a) => Some(a)
+  | Error(_) => None
+  }
+
 let onWithOptions = (~key: string, eventName, options: options, decoder) =>
   onCB(eventName, key, event => {
     if options.stopPropagation {
@@ -394,7 +400,7 @@ let onWithOptions = (~key: string, eventName, options: options, decoder) =>
     if options.preventDefault {
       preventDefault(event) |> ignore
     }
-    event |> Tea_json.Decoder.decodeEvent(decoder) |> Tea_result.result_to_option
+    event |> Tea_json.Decoder.decodeEvent(decoder) |> result_to_option
   })
 
 let on = (~key: string, eventName, decoder) =>

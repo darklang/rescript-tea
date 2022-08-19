@@ -10,7 +10,6 @@ let performOpt = (
   Task(task): t<'value, never>,
 ): Tea_cmd.t<'msg> =>
   Tea_cmd.call(callbacks => {
-    open Tea_result
     open Vdom
     let cb = x =>
       switch x {
@@ -62,7 +61,6 @@ let nativeBinding = (func: (Belt.Result.t<'succeed, 'fail> => unit) => unit): t<
 > => Task(func)
 
 let andThen = (fn, Task(task)) => {
-  open Tea_result
   Task(
     cb =>
       task(x =>
@@ -77,7 +75,6 @@ let andThen = (fn, Task(task)) => {
 }
 
 let onError = (fn, Task(task)) => {
-  open Tea_result
   Task(
     cb =>
       task(x =>
@@ -145,7 +142,6 @@ let rec sequence = x =>
 let testing_deop = ref(true)
 
 let testing = () => {
-  open Tea_result
   let doTest = (expected, Task(task)) => {
     let testAssert = v =>
       if v == expected {
