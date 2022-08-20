@@ -395,7 +395,11 @@ let onWithOptions = (~key: string, eventName, options: options, decoder) =>
     if options.preventDefault {
       preventDefault(event) |> ignore
     }
-    event |> Tea_json.Decoder.decodeEvent(decoder) |> Tea_result.result_to_option
+    let result = event |> Tea_json.Decoder.decodeEvent(decoder)
+      switch result {
+      | Ok(a) => Some(a)
+      | Error(_) => None
+      }
   })
 
 let on = (~key: string, eventName, decoder) =>
