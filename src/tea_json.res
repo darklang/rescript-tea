@@ -229,21 +229,18 @@ module Decoder = {
     },
   )
 
-  let map2 = (mapper, Decoder(decoder1), Decoder(decoder2)) => Decoder(
+let map2 = (mapper, Decoder(decoder1), Decoder(decoder2)) => Decoder(
     value => {
       switch (decoder1(value), decoder2(value)) {
       | (Ok(v1), Ok(v2)) => Ok(mapper(v1, v2))
-      | (e1, e2) => let error_of_first = (fst, x) =>
-        switch x {
+      | (e1, e2) => 
+       let result = switch e2 {
         | Error(e) => Some(e)
-        | Ok(_) => 
-                switch fst { 
-                | Ok(_) => None 
-                | Error(e) => Some(e)
-         }
-        }
-      
-        switch error_of_first(e1, e2) {
+        | Ok(_) =>
+          switch e1 { 
+          | Ok(_) => None 
+          | Error(e) => Some(e)}}
+        switch result {
         | None => failwith("Impossible case")
         | Some(e) => Error("map2 -> " ++ e)
         }
