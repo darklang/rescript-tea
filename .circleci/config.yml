@@ -17,7 +17,9 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
 
-      - run: npm install
+      - run:
+          name: Run tests
+          command: npm test
 
 workflows:
   sample:
