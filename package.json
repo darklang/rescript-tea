@@ -1,3 +1,4 @@
+
 {
   "name": "rescript-tea",
   "version": "0.15.0",
@@ -16,6 +17,7 @@
     "build:test": "run-p build:test:*",
     "pretest": "run-s build:test",
     "test": "echo \"Error: no test specified\" && exit 1"
+
   },
   "repository": {
     "type": "git",
@@ -33,13 +35,16 @@
   },
   "homepage": "https://github.com/overminddl1/bucklescript-tea#readme",
   "devDependencies": {
+
     "browserify": "^14.5.0",
     "npm-run-all": "^4.0.2",
     "pre-commit": "^1.2.2",
     "rescript": "^9.1.4",
+
     "watchify": "^3.11.1"
   },
-  "dependencies": {
+    "dependencies": {
     "rescript-webapi": "^0.6.1"
   }
+
 }
