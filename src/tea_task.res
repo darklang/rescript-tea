@@ -1,7 +1,7 @@
 type never
 
 type rec t<'succeed, 'fail> =
-  | Task((Tea_result.t<'succeed, 'fail> => unit) => unit): t<'succeed, 'fail>
+  | Task((result<'succeed, 'fail> => unit) => unit): t<'succeed, 'fail>
 
 let nothing = () => ()
 
@@ -10,7 +10,6 @@ let performOpt = (
   Task(task): t<'value, never>,
 ): Tea_cmd.t<'msg> =>
   Tea_cmd.call(callbacks => {
-    open Tea_result
     open Vdom
     let cb = x =>
       switch x {
@@ -32,7 +31,7 @@ let perform = (toMessage: 'value => 'msg, task: t<'value, never>): Tea_cmd.t<'ms
   performOpt(v => Some(toMessage(v)), task)
 
 let attemptOpt = (
-  resultToOptionalMessage: Tea_result.t<'succeed, 'fail> => option<'msg>,
+  resultToOptionalMessage: Belt.Result.t<'succeed, 'fail> => option<'msg>,
   Task(task): t<'succeed, 'fail>,
 ): Tea_cmd.t<'msg> =>
   Tea_cmd.call(callbacks => {
@@ -46,23 +45,22 @@ let attemptOpt = (
   })
 
 let attempt = (
-  resultToMessage: Tea_result.t<'succeed, 'fail> => 'msg,
+  resultToMessage: result<'succeed, 'fail> => 'msg,
   task: t<'succeed, 'fail>,
 ): Tea_cmd.t<'msg> => attemptOpt(v => Some(resultToMessage(v)), task)
 
 let ignore = task => attemptOpt(_ => None, task)
 
-let succeed = (value: 'v): t<'v, 'e> => Task(cb => cb(Tea_result.Ok(value)))
+let succeed = (value: 'v): t<'v, 'e> => Task(cb => cb(Belt.Result.Ok(value)))
 
-let fail = (value: 'v): t<'e, 'v> => Task(cb => cb(Tea_result.Error(value)))
+let fail = (value: 'v): t<'e, 'v> => Task(cb => cb(Belt.Result.Error(value)))
 
-let nativeBinding = (func: (Tea_result.t<'succeed, 'fail> => unit) => unit): t<
+let nativeBinding = (func: (Belt.Result.t<'succeed, 'fail> => unit) => unit): t<
   'succeed,
   'fail,
 > => Task(func)
 
 let andThen = (fn, Task(task)) => {
-  open Tea_result
   Task(
     cb =>
       task(x =>
@@ -77,7 +75,6 @@ let andThen = (fn, Task(task)) => {
 }
 
 let onError = (fn, Task(task)) => {
-  open Tea_result
   Task(
     cb =>
       task(x =>
@@ -91,10 +88,10 @@ let onError = (fn, Task(task)) => {
   )
 }
 
-let fromResult: Tea_result.t<'success, 'failure> => t<'success, 'failure> = x =>
+let fromResult: result<'success, 'failure> => t<'success, 'failure> = x =>
   switch x {
-  | Tea_result.Ok(s) => succeed(s)
-  | Tea_result.Error(err) => fail(err)
+  | Belt.Result.Ok(s) => succeed(s)
+  | Belt.Result.Error(err) => fail(err)
   }
 
 let mapError = (func, task) => task |> onError(e => fail(func(e)))
@@ -145,7 +142,6 @@ let rec sequence = x =>
 let testing_deop = ref(true)
 
 let testing = () => {
-  open Tea_result
   let doTest = (expected, Task(task)) => {
     let testAssert = v =>
       if v == expected {

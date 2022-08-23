@@ -1,6 +1,6 @@
 open Tea
 open Tea.Html
-type result<'ok, 'err> = Tea_result.t<'ok, 'err>
+type result<'ok, 'err> = result<'ok, 'err>
 
 @deriving(accessors)
 type msg =

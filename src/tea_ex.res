@@ -8,7 +8,6 @@ let render_event = (~key="", msg) => {
 }
 module LocalStorage = {
   open Tea_task
-  open Tea_result
   let length = nativeBinding(cb =>
     switch Web.Window.LocalStorage.length(Web.Window.window) {
     | None => cb(Error("localStorage is not available"))
