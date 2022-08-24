@@ -3,7 +3,6 @@ expect to use frequently will be closer to the top. ")
 
 open Vdom
 
-
 let map = Tea_app.map
 
 @@ocaml.text(" {1 Primitives} ")

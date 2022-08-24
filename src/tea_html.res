@@ -1,6 +1,5 @@
 open Vdom
 
-
 let map = Tea_app.map
 
 /* Nodes */
