@@ -1,6 +1,6 @@
 open Vdom
 
-module Cmds = Tea_html_cmds
+//module Cmds = Tea_html_cmds
 
 let map = Tea_app.map
 
