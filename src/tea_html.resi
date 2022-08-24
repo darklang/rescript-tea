@@ -1,4 +1,3 @@
-//module Cmds = Tea_html_cmds
 
 let map: ('msg => 'b, Vdom.t<'msg>) => Vdom.t<'b>
 
