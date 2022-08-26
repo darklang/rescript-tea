@@ -444,7 +444,7 @@ let map2 = (mapper, Decoder(decoder1), Decoder(decoder2)) => Decoder(
 
   let decodeString = (decoder, string) =>
     try {
-      let value = Js.Json.parseExn(string)
+      let value = Web.Json.parseExn(string)
       decodeValue(decoder, value)
     } catch {
     /* | JsException e -> Error ("Given an invalid JSON: " ^ e) */

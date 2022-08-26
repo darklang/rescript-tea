@@ -68,7 +68,7 @@ let missingGlyph = (~key="", ~unique="", props, nodes) =>
 let pattern = (~key="", ~unique="", props, nodes) =>
   fullnode(svgNamespace, "pattern", key, unique, props, nodes)
 
-let \"switch" = (~key="", ~unique="", props, nodes) =>
+let switch' = (~key="", ~unique="", props, nodes) =>
   fullnode(svgNamespace, "switch", key, unique, props, nodes)
 
 let symbol = (~key="", ~unique="", props, nodes) =>

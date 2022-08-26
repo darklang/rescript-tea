@@ -85,7 +85,7 @@ let missingGlyph: (
 let pattern: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<
   'msg,>
   
-let \"switch": (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let switch': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
 let symbol: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
