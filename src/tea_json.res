@@ -1,7 +1,7 @@
 module Decoder = {
   type error = String.t
 
-  module ObjectDict = Map.Make(String)
+  module ObjectDict = Belt.Map.String
 
   type t<'input, 'result> = Decoder('input => result<'result, error>)
   /* 
@@ -147,7 +147,7 @@ module Decoder = {
           | None => raise(ParseFail("Key is undefined: " ++ k))
           | Some(v) =>
             switch decoder(v) {
-            | Ok(r) => ObjectDict.add(k, r, d)
+            | Ok(r) => ObjectDict.set(d,k, r)
             | Error(e) => raise(ParseFail(e))
             }
           }
@@ -444,7 +444,7 @@ let map2 = (mapper, Decoder(decoder1), Decoder(decoder2)) => Decoder(
 
   let decodeString = (decoder, string) =>
     try {
-      let value = Web.Json.parseExn(string)
+      let value = Js.Json.parseExn(string)
       decodeValue(decoder, value)
     } catch {
     /* | JsException e -> Error ("Given an invalid JSON: " ^ e) */
