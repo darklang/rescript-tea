@@ -28,7 +28,7 @@ type requestEvents<'msg> = {
 }
 let emptyRequestEvents: requestEvents<'a>
 type rawRequest<'res> = {
-  method': string,
+  method: string,
   headers: list<header>,
   url: string,
   body: requestBody,

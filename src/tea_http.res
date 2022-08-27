@@ -51,7 +51,7 @@ let emptyRequestEvents = {
 }
 
 type rawRequest<'res> = {
-  method': string,
+  method: string,
   headers: list<header>,
   url: string,
   body: requestBody,
@@ -80,7 +80,7 @@ let request = rawRequest => Request(rawRequest, None)
 
 let getString = url =>
   request({
-    method': "GET",
+    method: "GET",
     headers: list{},
     url: url,
     body: Web.XMLHttpRequest.EmptyBody,
@@ -91,7 +91,7 @@ let getString = url =>
 
 let toTask = (Request(request, _maybeEvents)) => {
   module StringMap = Belt.Map.String
-  let {method', headers, url, body, expect, timeout, withCredentials} = request
+  let {method, headers, url, body, expect, timeout, withCredentials} = request
   let Expect(typ, responseToResult) = expect
   Tea_task.nativeBinding(cb => {
     let enqRes = (result, _ev) => cb(result)
@@ -123,7 +123,7 @@ let toTask = (Request(request, _maybeEvents)) => {
         }
       }
     })
-    let () = try Web.XMLHttpRequest.open_(method', url, xhr) catch {
+    let () = try Web.XMLHttpRequest.open'(method, url, xhr) catch {
     | _ => enqResError(BadUrl(url), ())
     }
     let () = {
@@ -142,7 +142,7 @@ let toTask = (Request(request, _maybeEvents)) => {
 
 let send = (resultToMessage, Request(request, maybeEvents)) => {
   module StringMap = Belt.Map.String
-  let {method', headers, url, body, expect, timeout, withCredentials} = request
+  let {method, headers, url, body, expect, timeout, withCredentials} = request
   let Expect(typ, responseToResult) = expect
   Tea_cmd.call(callbacks => {
     let enqRes = (result, _ev) => {
@@ -189,7 +189,7 @@ let send = (resultToMessage, Request(request, maybeEvents)) => {
         }
       }
     })
-    let () = try Web.XMLHttpRequest.open_(method', url, xhr) catch {
+    let () = try Web.XMLHttpRequest.open'(method, url, xhr) catch {
     | _ => enqResError(BadUrl(url), ())
     }
     let () = {
