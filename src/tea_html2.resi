@@ -101,7 +101,7 @@ let button: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom
 
 let select: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
-let option': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
+let option: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
 
 let optgroup: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
 
@@ -190,7 +190,7 @@ let track: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.
 
 let embed: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
-let object': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
+let object: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
 
 let param: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
@@ -214,7 +214,7 @@ let abbr: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t
 
 let time: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
-let var': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let var: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
 let samp: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
@@ -277,7 +277,7 @@ module Attributes: {
 
 
 
-  let class': string => Vdom.property<'msg>
+  let class: string => Vdom.property<'msg>
 
   let classList: list<(string, bool)> => Vdom.property<'msg>
 
@@ -327,7 +327,7 @@ module Attributes: {
 
   let maxlength: int => Vdom.property<'msg>
 
-  let method': string => Vdom.property<'msg>
+  let method: string => Vdom.property<'msg>
 
   let multiple: bool => Vdom.property<'msg>
 
