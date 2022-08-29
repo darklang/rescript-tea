@@ -1,5 +1,5 @@
 open Tea.App
-open Tea.Html2
+open Tea.Html
 open Tea_html2.Events 
 
 type msg =

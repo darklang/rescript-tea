@@ -1,7 +1,7 @@
 open Tea.App
 open Tea_html2.Events
 open Tea_html2.Attributes
-open! Tea.Html2
+open! Tea.Html
 
 @deriving({accessors: accessors}) type msg = Trigger
 

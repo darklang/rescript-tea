@@ -2,7 +2,7 @@ open Tea
 open Tea.App
 open Tea_html2.Attributes
 open Tea_html2.Events 
-open Tea.Html2
+open Tea.Html
 open Tea.Mouse
 
 @deriving({accessors: accessors})
