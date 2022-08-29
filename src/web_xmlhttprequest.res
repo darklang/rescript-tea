@@ -141,8 +141,8 @@ let getAllResponseHeadersAsDict = (x: t): result<Belt.Map.String.t<string>, erro
 
 let getResponseHeader = (key, x) => Js.Null.toOption(x["getResponse"](key))
 
-let open_ = (method': string, url: string, ~async=true, ~user="", ~password="", x) =>
-  _open(x,method', url, async, user, password)
+let open_ = (method: string, url: string, ~async=true, ~user="", ~password="", x) =>
+  _open(x,method, url, async, user, password)
 
 let overrideMimeType = (mimetype: string, x: t): unit => overrideMimeType(x,mimetype)
 

@@ -34,10 +34,10 @@ let forward = window =>
   | Some(history) => forward(history)
   }
 
-let go = (window, to') =>
+let go = (window, to) =>
   switch Js.Undefined.toOption(window["history"]) {
   | None => ()
-  | Some(history) => go(history,to')
+  | Some(history) => go(history,to)
   }
 
 let pushState = (window, state, title, url) =>

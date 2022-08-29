@@ -105,7 +105,7 @@ let img: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<
 
 let select: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
-let option': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
+let option: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
 
 let form: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
@@ -185,7 +185,7 @@ let track: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.
 
 let embed: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
-let object': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
+let object: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg,>
 
 let param: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
@@ -204,7 +204,7 @@ let dfn: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<
 
 let abbr: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
-let var': (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
+let var: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
 let samp: (~key: string=?, ~unique: string=?, Vdom.properties<'msg>, list<Vdom.t<'msg>>) => Vdom.t<'msg>
 
@@ -241,7 +241,7 @@ let src: string => Vdom.property<'msg>
 
 let title: string => Vdom.property<'msg>
 
-let class': string => Vdom.property<'msg>
+let class: string => Vdom.property<'msg>
 
 let classList: list<(string, bool)> => Vdom.property<'msg>
 
@@ -269,7 +269,7 @@ let target: string => Vdom.property<'msg>
 
 let action: string => Vdom.property<'msg>
 
-let method': string => Vdom.property<'msg>
+let method: string => Vdom.property<'msg>
 
 
 
