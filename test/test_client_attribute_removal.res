@@ -1,6 +1,6 @@
 open Tea.App
 open Tea.Html
-open Tea_html2.Events
+open Tea_html.Events
 
 
 type model = {
@@ -36,16 +36,16 @@ let lang = (l, is_selected) =>
   li(
     list{
       onClick(Select(l)),
-      Tea_html2.Attributes.style("color", "blue"),
+      Tea_html.Attributes.style("color", "blue"),
       if is_selected {
-        Tea_html2.Attributes.style("border", "1px solid black")
+        Tea_html.Attributes.style("border", "1px solid black")
       } else {
-        Tea_html2.Attributes.noProp
+        Tea_html.Attributes.noProp
       },
       if is_selected {
         Vdom.attribute("", "lang", l)
       } else {
-        Tea_html2.Attributes.noProp
+        Tea_html.Attributes.noProp
       },
     },
     list{text(l)},
