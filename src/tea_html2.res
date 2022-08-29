@@ -5,6 +5,14 @@ open Vdom
 
 let map = Tea_app.map
 
+@send external
+preventDefault: (Web.Node.event) => unit="preventDefault"
+@send external
+stopPropagation: (Web.Node.event) => unit="stopPropagation"
+
+let stopPropagation = t => stopPropagation(t)
+let preventDefault = t => preventDefault(t)
+
 @@ocaml.text(" {1 Primitives} ")
 
 let text = str => text(str)
@@ -649,17 +657,41 @@ module Events = {
 
   let onMsg = (eventName, msg) => onMsg(eventName, msg)
 
-  let on = Tea_html.on
+  type options = {
+  stopPropagation: bool,
+  preventDefault: bool,
+  }
 
-  let onWithOptions = Tea_html.onWithOptions
+  let defaultOptions = {
+  stopPropagation: false,
+  preventDefault: false,
+  }
 
-  let defaultOptions = Tea_html.defaultOptions
+  let onWithOptions = (~key: string, eventName, options: options, decoder) =>
+  onCB(eventName, key, event => {
+    if options.stopPropagation {
+      stopPropagation(event) |> ignore
+    }
+    if options.preventDefault {
+      preventDefault(event) |> ignore
+    }
+    let result = event |> Tea_json.Decoder.decodeEvent(decoder)
+      switch result {
+      | Ok(a) => Some(a)
+      | Error(_) => None
+      }
+  })
 
-  let targetValue = Tea_html.targetValue
+  let on = (~key: string, eventName, decoder) =>
+  onWithOptions(~key, eventName, defaultOptions, decoder)
 
-  let targetChecked = Tea_html.targetChecked
 
-  let keyCode = Tea_html.keyCode
+
+  let targetValue = Tea_json.Decoder.at(list{"target", "value"}, Tea_json.Decoder.string)
+
+  let targetChecked = Tea_json.Decoder.at(list{"target", "checked"}, Tea_json.Decoder.bool)
+
+  let keyCode = Tea_json.Decoder.field("keyCode", Tea_json.Decoder.int)
 
   let preventDefaultOn = (~key="", eventName, decoder) =>
     onWithOptions(~key, eventName, {...defaultOptions, preventDefault: true}, decoder)

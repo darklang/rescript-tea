@@ -523,9 +523,11 @@ module Events: {
 
   let on: (~key: string, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
 
-  let onWithOptions: (~key: string, string, Tea_html.options, Tea_json.Decoder.t<'msg, 'b>,) => Vdom.property<'b>
+  type options = {stopPropagation: bool, preventDefault: bool}
+  
+  let onWithOptions: (~key: string, string, options, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
 
-  let defaultOptions: Tea_html.options
+  let defaultOptions: options
 
   let targetValue: Tea_json.Decoder.t<Web.Json.t, string>
 
