@@ -1,6 +1,6 @@
 open Tea
 open Tea.Html
-open Tea_html2.Events 
+open Tea_html.Events 
 type result<'ok, 'err> = result<'ok, 'err>
 
 @deriving(accessors)

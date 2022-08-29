@@ -1,6 +1,6 @@
 open Tea.App
 open Tea.Html
-open Tea_html2.Events 
+open Tea_html.Events 
 
 
 type msg =
@@ -35,7 +35,7 @@ let view = model =>
   div(
     list{},
     list{
-      span(list{Tea_html2.Attributes.style("text-weight", "bold")}, list{text(string_of_int(model))}),
+      span(list{Tea_html.Attributes.style("text-weight", "bold")}, list{text(string_of_int(model))}),
       br(list{}),
       view_button(
         "Increment",
