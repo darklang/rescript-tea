@@ -1,5 +1,7 @@
 open Tea
 open Tea.App
+open Tea_html.Attributes
+open Tea_html.Events 
 open Tea.Html
 open Tea.Mouse
 

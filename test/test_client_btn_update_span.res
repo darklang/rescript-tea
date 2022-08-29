@@ -1,4 +1,6 @@
 open Tea.App
+open Tea_html.Events 
+open Tea_html.Attributes
 open Tea.Html
 
 @deriving({accessors: accessors}) type msg = Trigger
