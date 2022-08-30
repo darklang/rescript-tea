@@ -50,7 +50,7 @@ let noProp: property<'msg>
 
 let prop: (string, string) => property<'msg>
 
-let onCB: (string, string, Dom.event => option<'msg>) => property<'msg>
+let onCB: (~key: string, string, Dom.event => option<'msg>) => property<'msg>
 
 let onMsg: (string, 'msg) => property<'msg>
 

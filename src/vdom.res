@@ -65,13 +65,11 @@ let lazyGen = (key: string, fn: unit => t<'msg>): t<'msg> => LazyGen(key, fn, re
 
 let noProp: property<'msg> = (NoProp: property<'msg>)
 
-let prop = (key: string, value: string): property<'msg> => RawProp(key, value)
+let prop = (propName: string, value: string): property<'msg> => RawProp(propName, value)
 
-let onCB = (name: string, key: string, cb: Dom.event => option<'msg>): property<'msg> => Event(
-  name,
-  EventHandlerCallback(key, cb),
-  ref(None),
-)
+let onCB = (~key: string, eventName: string, cb: Dom.event => option<'msg>): property<
+  'msg,
+> => Event(eventName, EventHandlerCallback(key, cb), ref(None))
 
 let onMsg = (name: string, msg: 'msg): property<'msg> => Event(
   name,

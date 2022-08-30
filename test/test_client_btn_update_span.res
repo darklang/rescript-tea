@@ -16,7 +16,7 @@ let update' = (model, x) =>
 
 let render_model = x =>
   switch x {
-  | (Some(_), Some(_)) => input(list{value("This should be on screen")}, list{})
+  | (Some(_), Some(_)) => input'(list{value("This should be on screen")}, list{})
   | _ => span(list{}, list{text("nothing")})
   }
 

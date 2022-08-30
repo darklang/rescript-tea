@@ -1,7 +1,7 @@
 open Tea
 open Tea.App
 open Tea_html.Attributes
-open Tea_html.Events 
+open Tea_html.Events
 open Tea.Html
 open Tea.Mouse
 
@@ -65,7 +65,7 @@ let subscriptions = model =>
 
 let px = number => string_of_int(number) ++ "px"
 
-let onMouseDown = onCB("mousedown", "", ev =>
+let onMouseDown = onCB("mousedown", ~key="", ev =>
   Json.Decoder.decodeEvent(
     Json.Decoder.map(dragStart, Mouse.position),
     ev,

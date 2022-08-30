@@ -248,7 +248,8 @@ let form: (
   list<Vdom.t<'msg>>,
 ) => Vdom.t<'msg>
 
-let input: (
+// Named input' to not clash with Pervasives.input when open
+let input': (
   ~key: string=?,
   ~unique: string=?,
   Vdom.properties<'msg>,
@@ -893,7 +894,6 @@ module Attributes: {
   let lang: string => Vdom.property<'msg>
 
   let spellcheck: bool => Vdom.property<'msg>
-  
 
   let tabindex: int => Vdom.property<'msg>
 
@@ -912,18 +912,18 @@ module Attributes: {
 module Events: {
   type options = {stopPropagation: bool, preventDefault: bool}
 
-  let onCB: (string, string, Dom.event => option<'a>) => Vdom.property<'a>
+  let onCB: (~key: string, string, Dom.event => option<'msg>) => Vdom.property<'msg>
 
-  let onMsg: (string, 'a) => Vdom.property<'a>
+  let onMsg: (string, 'msg) => Vdom.property<'msg>
 
-  let on: (~key: string, string, Tea_json.Decoder.t<'a, 'b>) => Vdom.property<'b>
+  let on: (~key: string, string, Tea_json.Decoder.t<'event, 'msg>) => Vdom.property<'msg>
 
   let onWithOptions: (
     ~key: string,
     string,
     options,
-    Tea_json.Decoder.t<'msg, 'b>,
-  ) => Vdom.property<'b>
+    Tea_json.Decoder.t<'event, 'msg>,
+  ) => Vdom.property<'msg>
 
   let defaultOptions: options
 
@@ -933,39 +933,43 @@ module Events: {
 
   let keyCode: Tea_json.Decoder.t<Js.Json.t, int>
 
-  let preventDefaultOn: (~key: string=?, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
+  let preventDefaultOn: (
+    ~key: string=?,
+    string,
+    Tea_json.Decoder.t<'event, 'msg>,
+  ) => Vdom.property<'msg>
 
-  let onClick: 'a => Vdom.property<'a>
+  let onClick: 'msg => Vdom.property<'msg>
 
-  let onDoubleClick: 'a => Vdom.property<'a>
+  let onDoubleClick: 'msg => Vdom.property<'msg>
 
-  let onMouseDown: 'a => Vdom.property<'a>
+  let onMouseDown: 'msg => Vdom.property<'msg>
 
-  let onMouseUp: 'a => Vdom.property<'a>
+  let onMouseUp: 'msg => Vdom.property<'msg>
 
-  let onMouseEnter: 'a => Vdom.property<'a>
+  let onMouseEnter: 'msg => Vdom.property<'msg>
 
-  let onMouseLeave: 'a => Vdom.property<'a>
+  let onMouseLeave: 'msg => Vdom.property<'msg>
 
-  let onMouseOver: 'a => Vdom.property<'a>
+  let onMouseOver: 'msg => Vdom.property<'msg>
 
-  let onMouseOut: 'a => Vdom.property<'a>
+  let onMouseOut: 'msg => Vdom.property<'msg>
 
-  let onInputOpt: (~key: string=?, string => option<'a>) => Vdom.property<'a>
+  let onInputOpt: (~key: string=?, string => option<'msg>) => Vdom.property<'msg>
 
-  let onInput: (~key: string=?, string => 'a) => Vdom.property<'a>
+  let onInput: (~key: string=?, string => 'msg) => Vdom.property<'msg>
 
-  let onCheckOpt: (~key: string=?, bool => option<'a>) => Vdom.property<'a>
+  let onCheckOpt: (~key: string=?, bool => option<'msg>) => Vdom.property<'msg>
 
-  let onCheck: (~key: string=?, bool => 'a) => Vdom.property<'a>
+  let onCheck: (~key: string=?, bool => 'msg) => Vdom.property<'msg>
 
-  let onChangeOpt: (~key: string=?, string => option<'a>) => Vdom.property<'a>
+  let onChangeOpt: (~key: string=?, string => option<'msg>) => Vdom.property<'msg>
 
-  let onChange: (~key: string=?, string => 'a) => Vdom.property<'a>
+  let onChange: (~key: string=?, string => 'msg) => Vdom.property<'msg>
 
-  let onSubmit: 'a => Vdom.property<'a>
+  let onSubmit: 'msg => Vdom.property<'msg>
 
-  let onBlur: 'a => Vdom.property<'a>
+  let onBlur: 'msg => Vdom.property<'msg>
 
-  let onFocus: 'a => Vdom.property<'a>
+  let onFocus: 'msg => Vdom.property<'msg>
 }
