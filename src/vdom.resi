@@ -14,6 +14,7 @@ type property<'msg> =
   | Attribute(string, string, string)
   | Data(string, string)
   | Event(string, eventHandler<'msg>, ref<option<eventCache<'msg>>>)
+  | Event'(string, string, Web.Node.event => option<'msg>)
   | Style(list<(string, string)>)
 
 type properties<'msg> = list<property<'msg>>
@@ -49,6 +50,8 @@ let noProp: property<'msg>
 let prop: (string, string) => property<'msg>
 
 let onCB: (string, string, Web.Node.event => option<'msg>) => property<'msg>
+
+let on': (string, string, Web.Node.event => option<'a>) => property<'a>
 
 let onMsg: (string, 'msg) => property<'msg>
 

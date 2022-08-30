@@ -524,6 +524,8 @@ module Events: {
 
   let on: (~key: string, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
 
+  let on': (string, ~key: string=?, Web.Node.event => option<'a>,) => Vdom.property<'a>
+  
   type options = {stopPropagation: bool, preventDefault: bool}
   
   let onWithOptions: (~key: string, string, options, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
@@ -543,7 +545,11 @@ module Events: {
   
   let onClick: 'msg => Vdom.property<'msg>
 
+  let onClick': (~key: string=?, 'a) => Vdom.property<'a>
+
   let onDoubleClick: 'msg => Vdom.property<'msg>
+
+  let onDoubleClick':(~key: string=?, 'a) => Vdom.property<'a>
 
   let onMouseDown: 'msg => Vdom.property<'msg>
 
@@ -578,6 +584,8 @@ module Events: {
  
  
   let onBlur: 'msg => Vdom.property<'msg>
+
+  let onBlur': (~key: string=?, 'a) => Vdom.property<'a>
 
   let onFocus: 'msg => Vdom.property<'msg>
 

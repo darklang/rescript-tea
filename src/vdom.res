@@ -19,6 +19,7 @@ type property<'msg> =
   | Attribute(string, string, string)
   | Data(string, string)
   | Event(string, eventHandler<'msg>, ref<option<eventCache<'msg>>>)
+  | Event'(string, string, Web.Node.event => option<'msg>)
   | Style(list<(string, string)>)
 type properties<'msg> = list<property<'msg>>
 type rec t<'msg> =
@@ -29,6 +30,7 @@ type rec t<'msg> =
   | LazyGen(string, unit => t<'msg>, ref<t<'msg>>)
   | Tagger(ref<applicationCallbacks<'msg>> => ref<applicationCallbacks<'msg>>, t<'msg>)
 let noNode: t<'msg> = (CommentNode(""): t<'msg>)
+let on' = (name, key:string, cb) => Event'(name, key, cb)
 let comment = (s: string): t<'msg> => CommentNode(s)
 let text = (s: string): t<'msg> => Text(s)
 let fullnode = (
@@ -75,6 +77,7 @@ let rec renderToHtmlString: t<'msg> => string = (
           String.concat("", list{" ", k, "=\"", v, "\""})
         | @implicit_arity Data(k, v) => String.concat("", list{" data-", k, "=\"", v, "\""})
         | @implicit_arity Event(_, _, _) => ""
+        | @implicit_arity Event'(_, _, _) => ""
         | Style(s) =>
           String.concat(
             "",
@@ -205,6 +208,7 @@ let patchVNodesOnElems_PropertiesApply_Add = (
       failwith("TODO:  Add Data Unhandled")
     | @implicit_arity Event(name, handlerType, cache) =>
       cache := eventHandler_Register(callbacks, elem, name, handlerType)
+    | @implicit_arity Event'(_, _, _) => ()
     | Style(s) =>
       List.fold_left(((), (k, v)) => Web.Node.setStyleProperty(elem, k, Js.Null.return(v)), (), s)
     }
@@ -224,6 +228,7 @@ let patchVNodesOnElems_PropertiesApply_Remove = (
       failwith("TODO:  Remove Data Unhandled")
     | @implicit_arity Event(name, _, cache) =>
       cache := eventHandler_Unregister(elem, name, cache.contents)
+    | @implicit_arity Event'(_, _, _) => ()
     | Style(s) =>
       List.fold_left(((), (k, _v)) => Web.Node.setStyleProperty(elem, k, Js.Null.empty), (), s)
     }
@@ -255,6 +260,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate = (
       failwith("TODO:  Mutate Data Unhandled")
     | @implicit_arity Event(_newName, _newHandlerType, _newCache) as _newProp =>
       failwith("This will never be called because it is gated")
+    | @implicit_arity Event'(_, _, _) => ()
     | Style(s) as _newProp =>
       @ocaml.warning("-4")
       switch oldProp {

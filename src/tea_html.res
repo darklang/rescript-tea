@@ -680,7 +680,7 @@ module Events = {
   let on = (~key: string, eventName, decoder) =>
   onWithOptions(~key, eventName, defaultOptions, decoder)
 
-
+  let on' = (typ, ~key="", cb) => on'(typ, key, cb)
 
   let targetValue = Tea_json.Decoder.at(list{"target", "value"}, Tea_json.Decoder.string)
 
@@ -695,7 +695,11 @@ module Events = {
 
   let onClick = msg => onMsg("click", msg)
 
+  let onClick' = (~key="", msg) => onCB("click", key, _ev => Some(msg))
+
   let onDoubleClick = msg => onMsg("dblclick", msg)
+
+  let onDoubleClick' = (~key="", msg) => onCB("dblclick", key, _ev => Some(msg))
 
   let onMouseDown = msg => onMsg("mousedown", msg)
 
@@ -758,6 +762,8 @@ module Events = {
   @@ocaml.text(" {1 Focus helpers} ")
 
   let onBlur = msg => onMsg("blur", msg)
+
+  let onBlur' = (~key="", msg) => onCB("blur", key, _ev => Some(msg))
 
   let onFocus = msg => onMsg("focus", msg)
 }
