@@ -166,7 +166,7 @@ let onEnter = (~key="", msg) => {
     | _ => None
     }
 
-  on'("keydown", ~key, tagger)
+  onCB("keydown", ~key, tagger)
 }
 
 let viewEntry = todo => {
@@ -182,15 +182,15 @@ let viewEntry = todo => {
               Html.Attributes.class("toggle"),
               Html.Attributes.type'("checkbox"),
               Html.Attributes.checked(todo.completed),
-              onClick'(~key=key ++ string_of_bool(todo.completed), Check(todo.id, !todo.completed)),
+              onClick(Check(todo.id, !todo.completed)),
             },
             list{},
           ),
           label(
-            list{onDoubleClick'(~key, EditingEntry(todo.id, true))},
+            list{onDoubleClick(EditingEntry(todo.id, true))},
             list{text(todo.description)},
           ),
-          button(list{Html.Attributes.class("destroy"), onClick'(~key, Delete(todo.id))}, list{}),
+          button(list{Html.Attributes.class("destroy"), onClick(Delete(todo.id))}, list{}),
         },
       ),
       input'(
@@ -200,7 +200,7 @@ let viewEntry = todo => {
           Html.Attributes.name("title"),
           Html.Attributes.id("todo-" ++ string_of_int(todo.id)),
           onInput(~key, value => UpdateEntry(todo.id, value)),
-          onBlur'(~key, EditingEntry(todo.id, false)),
+          onBlur(EditingEntry(todo.id, false)),
           onEnter(~key, EditingEntry(todo.id, false)),
         },
         list{},
@@ -231,7 +231,7 @@ let viewEntries = (visibility, entries) => {
           Html.Attributes.type'("checkbox"),
           Html.Attributes.name("toggle"),
           Html.Attributes.checked(allCompleted),
-          onClick'(~key=string_of_bool(allCompleted), CheckAll(!allCompleted)),
+          onClick( CheckAll(!allCompleted)),
         },
         list{},
       ),
@@ -278,7 +278,7 @@ let viewControlsCount = entriesLeft => {
 
 let visibilitySwap = (uri, visibility, actualVisibility) =>
   li(
-    list{onClick'(~key=visibility, ChangeVisibility(visibility))},
+    list{onClick(ChangeVisibility(visibility))},
     list{
       a(
         list{Html.Attributes.href(uri), Html.Attributes.classList(list{("selected", visibility == actualVisibility)})},

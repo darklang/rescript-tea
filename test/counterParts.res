@@ -59,7 +59,7 @@ let update = (model, x) =>
 
 let shutdown = (model, id) => Cmd.msg(model.lift(Shutdown(id)))
 
-let view_button = (title, ~key="", msg) => button(list{onClick'(~key, msg)}, list{text(title)})
+let view_button = (title, msg) => button(list{onClick(msg)}, list{text(title)})
 
 let view = (id, model) => {
   let lift = model.lift
