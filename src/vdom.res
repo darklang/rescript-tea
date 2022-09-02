@@ -40,7 +40,7 @@ let fullnode = (
   unique: string,
   props: properties<'msg>,
   vdoms: list<t<'msg>>,
-): t<'msg> => @implicit_arity Node(namespace, tagName, key, unique, props, vdoms)
+): t<'msg> => Node(namespace, tagName, key, unique, props, vdoms)
 let node = (
   ~namespace: string="",
   tagName: string,
@@ -49,18 +49,18 @@ let node = (
   props: properties<'msg>,
   vdoms: list<t<'msg>>,
 ): t<'msg> => fullnode(namespace, tagName, key, unique, props, vdoms)
-let lazyGen = (key: string, fn: unit => t<'msg>): t<'msg> => @implicit_arity
+let lazyGen = (key: string, fn: unit => t<'msg>): t<'msg> => 
 LazyGen(key, fn, ref(noNode))
 let noProp: property<'msg> = (NoProp: property<'msg>)
-let prop = (key: string, value: string): property<'msg> => @implicit_arity RawProp(key, value)
+let prop = (key: string, value: string): property<'msg> => RawProp(key, value)
 let onCB = (name: string, key: string, cb: Web.Node.event => option<'msg>): property<
   'msg,
-> => @implicit_arity Event(name, @implicit_arity EventHandlerCallback(key, cb), ref(None))
-let onMsg = ( name: string, msg: 'msg): property<'msg> => @implicit_arity
+> => Event(name, EventHandlerCallback(key, cb), ref(None))
+let onMsg = ( name: string, msg: 'msg): property<'msg> => 
 Event(name, EventHandlerMsg(msg), ref(None))
-let attribute = (namespace: string, key: string, value: string): property<'msg> => @implicit_arity
+let attribute = (namespace: string, key: string, value: string): property<'msg> => 
 Attribute(namespace, key, value)
-let data = (key: string, value: string): property<'msg> => @implicit_arity Data(key, value)
+let data = (key: string, value: string): property<'msg> => Data(key, value)
 let style = (key: string, value: string): property<'msg> => Style(list{(key, value)})
 let styles = (s): property<'msg> => Style(s)
 let rec renderToHtmlString: t<'msg> => string = (
@@ -68,15 +68,15 @@ let rec renderToHtmlString: t<'msg> => string = (
     switch x {
     | CommentNode(s) => "<!-- " ++ (s ++ " -->")
     | Text(s) => s
-    | @implicit_arity Node(namespace, tagName, _key, _unique, props, vdoms) =>
+    | Node(namespace, tagName, _key, _unique, props, vdoms) =>
       let renderProp = x =>
         switch x {
         | NoProp => ""
-        | @implicit_arity RawProp(k, v) => String.concat("", list{" ", k, "=\"", v, "\""})
-        | @implicit_arity Attribute(_namespace, k, v) =>
+        | RawProp(k, v) => String.concat("", list{" ", k, "=\"", v, "\""})
+        | Attribute(_namespace, k, v) =>
           String.concat("", list{" ", k, "=\"", v, "\""})
-        | @implicit_arity Data(k, v) => String.concat("", list{" data-", k, "=\"", v, "\""})
-        | @implicit_arity Event(_, _, _) => ""
+        | Data(k, v) => String.concat("", list{" data-", k, "=\"", v, "\""})
+        | Event(_, _, _) => ""
         | Style(s) =>
           String.concat(
             "",
@@ -106,10 +106,10 @@ let rec renderToHtmlString: t<'msg> => string = (
           ">",
         },
       )
-    | @implicit_arity LazyGen(_key, gen, _cache) =>
+    | LazyGen(_key, gen, _cache) =>
       let vdom = gen()
       renderToHtmlString(vdom)
-    | @implicit_arity Tagger(_tagger, vdom) => renderToHtmlString(vdom)
+    | Tagger(_tagger, vdom) => renderToHtmlString(vdom)
     }: t<'msg> => string
 )
 let emptyEventHandler: Web.Node.event_cb = (. _ev) => ()
@@ -126,16 +126,16 @@ let eventHandler = (
 let eventHandler_GetCB: (eventHandler<'msg>, Web.Node.event) => option<'msg> = (
   x =>
     switch x {
-    | @implicit_arity EventHandlerCallback(_, cb) => cb
+    | EventHandlerCallback(_, cb) => cb
     | EventHandlerMsg(msg) => _ev => Some(msg)
     }: (eventHandler<'msg>, Web.Node.event) => option<'msg>
 )
 let compareEventHandlerTypes = (left: eventHandler<'msg>): (eventHandler<'msg> => bool) =>
   x =>
     switch x {
-    | @implicit_arity EventHandlerCallback(key, _) =>
+    | EventHandlerCallback(key, _) =>
       switch left {
-      | @implicit_arity EventHandlerCallback(lkey, _) if key == lkey => true
+      | EventHandlerCallback(lkey, _) if key == lkey => true
       | _ => false
       }
     | EventHandlerMsg(msg) =>
@@ -199,13 +199,13 @@ let patchVNodesOnElems_PropertiesApply_Add = (
   x =>
     switch x {
     | NoProp => ()
-    | @implicit_arity RawProp(k, v) => Web.Node.setProp(elem, k, v)
-    | @implicit_arity Attribute(namespace, k, v) =>
+    | RawProp(k, v) => Web.Node.setProp(elem, k, v)
+    | Attribute(namespace, k, v) =>
       Web.Node.setAttributeNsOptional(elem, namespace, k, v)
-    | @implicit_arity Data(k, v) =>
+    | Data(k, v) =>
       Js.log(("TODO:  Add Data Unhandled", k, v))
       failwith("TODO:  Add Data Unhandled")
-    | @implicit_arity Event(name, handlerType, cache) =>
+    | Event(name, handlerType, cache) =>
       cache := eventHandler_Register(callbacks, elem, name, handlerType)
     | Style(s) =>
       List.fold_left(((), (k, v)) => Web.Node.setStyleProperty(elem, k, Js.Null.return(v)), (), s)
@@ -218,13 +218,13 @@ let patchVNodesOnElems_PropertiesApply_Remove = (
   x =>
     switch x {
     | NoProp => ()
-    | @implicit_arity RawProp(k, _v) => Web.Node.setProp(elem, k, Js.Undefined.empty)
-    | @implicit_arity Attribute(namespace, k, _v) =>
+    | RawProp(k, _v) => Web.Node.setProp(elem, k, Js.Undefined.empty)
+    | Attribute(namespace, k, _v) =>
       Web.Node.removeAttributeNsOptional(elem, namespace, k)
-    | @implicit_arity Data(k, v) =>
+    | Data(k, v) =>
       Js.log(("TODO:  Remove Data Unhandled", k, v))
       failwith("TODO:  Remove Data Unhandled")
-    | @implicit_arity Event(name, _, cache) =>
+    | Event(name, _, cache) =>
       cache := eventHandler_Unregister(elem, name, cache.contents)
     | Style(s) =>
       List.fold_left(((), (k, _v)) => Web.Node.setStyleProperty(elem, k, Js.Null.empty), (), s)
@@ -249,13 +249,13 @@ let patchVNodesOnElems_PropertiesApply_Mutate = (
     switch x {
     | NoProp as _newProp =>
       failwith("This should never be called as all entries through NoProp are gated.")
-    | @implicit_arity RawProp(k, v) as _newProp => Web.Node.setProp(elem, k, v)
-    | @implicit_arity Attribute(namespace, k, v) as _newProp =>
+    | RawProp(k, v) as _newProp => Web.Node.setProp(elem, k, v)
+    | Attribute(namespace, k, v) as _newProp =>
       Web.Node.setAttributeNsOptional(elem, namespace, k, v)
-    | @implicit_arity Data(k, v) as _newProp =>
+    | Data(k, v) as _newProp =>
       Js.log(("TODO:  Mutate Data Unhandled", k, v))
       failwith("TODO:  Mutate Data Unhandled")
-    | @implicit_arity Event(_newName, _newHandlerType, _newCache) as _newProp =>
+    | Event(_newName, _newHandlerType, _newCache) as _newProp =>
       failwith("This will never be called because it is gated")
     | Style(s) as _newProp =>
       @ocaml.warning("-4")
@@ -293,8 +293,8 @@ let rec patchVNodesOnElems_PropertiesApply = (
   | (list{NoProp, ...oldRest}, list{NoProp, ...newRest}) =>
     patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
-      list{@implicit_arity RawProp(oldK, oldV) as oldProp, ...oldRest},
-      list{@implicit_arity RawProp(newK, newV) as newProp, ...newRest},
+      list{RawProp(oldK, oldV) as oldProp, ...oldRest},
+      list{RawProp(newK, newV) as newProp, ...newRest},
     ) =>
     let () = if oldK == newK && oldV == newV {
       ()
@@ -303,8 +303,8 @@ let rec patchVNodesOnElems_PropertiesApply = (
     }
     patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
-      list{@implicit_arity Attribute(oldNS, oldK, oldV) as oldProp, ...oldRest},
-      list{@implicit_arity Attribute(newNS, newK, newV) as newProp, ...newRest},
+      list{Attribute(oldNS, oldK, oldV) as oldProp, ...oldRest},
+      list{Attribute(newNS, newK, newV) as newProp, ...newRest},
     ) =>
     let () = if oldNS == newNS && (oldK == newK && oldV == newV) {
       ()
@@ -313,8 +313,8 @@ let rec patchVNodesOnElems_PropertiesApply = (
     }
     patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
-      list{@implicit_arity Data(oldK, oldV) as oldProp, ...oldRest},
-      list{@implicit_arity Data(newK, newV) as newProp, ...newRest},
+      list{Data(oldK, oldV) as oldProp, ...oldRest},
+      list{Data(newK, newV) as newProp, ...newRest},
     ) =>
     let () = if oldK == newK && oldV == newV {
       ()
@@ -323,8 +323,8 @@ let rec patchVNodesOnElems_PropertiesApply = (
     }
     patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
-      list{@implicit_arity Event(oldName, oldHandlerType, oldCache) as _oldProp, ...oldRest},
-      list{@implicit_arity Event(newName, newHandlerType, newCache) as _newProp, ...newRest},
+      list{Event(oldName, oldHandlerType, oldCache) as _oldProp, ...oldRest},
+      list{Event(newName, newHandlerType, newCache) as _newProp, ...newRest},
     ) =>
     let () = eventHandler_Mutate(
       callbacks,
@@ -372,7 +372,7 @@ let rec patchVNodesOnElems_ReplaceNode = (
 ): (t<'msg> => unit) =>
   x =>
     switch x {
-    | @implicit_arity
+    | 
       Node(newNamespace, newTagName, _newKey, _newUnique, newProperties, newChildren) =>
       let oldChild = elems[idx]
       let newChild = Web.Document.createElementNsOptional(newNamespace, newTagName)
@@ -396,7 +396,7 @@ and patchVNodesOnElems_CreateElement = (callbacks: ref<applicationCallbacks<'msg
     switch x {
     | CommentNode(s) => Web.Document.createComment(s)
     | Text(text) => Web.Document.createTextNode(text)
-    | @implicit_arity
+    | 
       Node(newNamespace, newTagName, _newKey, _unique, newProperties, newChildren) =>
       let newChild = Web.Document.createElementNsOptional(newNamespace, newTagName)
       @ocaml.warning("-8")
@@ -409,11 +409,11 @@ and patchVNodesOnElems_CreateElement = (callbacks: ref<applicationCallbacks<'msg
       let childChildren = Web.Node.childNodes(newChild)
       let () = patchVNodesOnElems(callbacks, newChild, childChildren, 0, list{}, newChildren)
       newChild
-    | @implicit_arity LazyGen(_newKey, newGen, newCache) =>
+    | LazyGen(_newKey, newGen, newCache) =>
       let vdom = newGen()
       let () = newCache := vdom
       patchVNodesOnElems_CreateElement(callbacks, vdom)
-    | @implicit_arity Tagger(tagger, vdom) =>
+    | Tagger(tagger, vdom) =>
       patchVNodesOnElems_CreateElement(tagger(callbacks), vdom)
     }
 and patchVNodesOnElems_MutateNode = (
@@ -426,9 +426,9 @@ and patchVNodesOnElems_MutateNode = (
 ): unit =>
   switch (oldNode, newNode) {
   | (
-      @implicit_arity
+      
       Node(_oldNamespace, oldTagName, _oldKey, oldUnique, oldProperties, oldChildren) as _oldNode,
-      @implicit_arity
+      
       Node(_newNamespace, newTagName, _newKey, newUnique, newProperties, newChildren) as newNode,
     ) =>
     if oldUnique != newUnique || oldTagName != newTagName {
@@ -458,9 +458,9 @@ and patchVNodesOnElems = (
 ): unit =>
   @ocaml.warning("-4")
   switch (oldVNodes, newVNodes) {
-  | (list{@implicit_arity Tagger(_oldTagger, oldVdom), ...oldRest}, _) =>
+  | (list{Tagger(_oldTagger, oldVdom), ...oldRest}, _) =>
     patchVNodesOnElems(callbacks, elem, elems, idx, list{oldVdom, ...oldRest}, newVNodes)
-  | (list{oldNode, ...oldRest}, list{@implicit_arity Tagger(newTagger, newVdom), ...newRest}) =>
+  | (list{oldNode, ...oldRest}, list{Tagger(newTagger, newVdom), ...newRest}) =>
     let () = patchVNodesOnElems(
       newTagger(callbacks),
       elem,
@@ -490,8 +490,8 @@ and patchVNodesOnElems = (
     }
     patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
   | (
-      list{@implicit_arity LazyGen(oldKey, _oldGen, oldCache), ...oldRest},
-      list{@implicit_arity LazyGen(newKey, newGen, newCache), ...newRest},
+      list{LazyGen(oldKey, _oldGen, oldCache), ...oldRest},
+      list{LazyGen(newKey, newGen, newCache), ...newRest},
     ) =>
     if oldKey == newKey {
       let () = newCache := oldCache.contents
@@ -499,22 +499,22 @@ and patchVNodesOnElems = (
     } else {
       switch (oldRest, newRest) {
       | (
-          list{@implicit_arity LazyGen(olderKey, _olderGen, _olderCache), ...olderRest},
-          list{@implicit_arity LazyGen(newerKey, _newerGen, _newerCache), ...newerRest},
+          list{LazyGen(olderKey, _olderGen, _olderCache), ...olderRest},
+          list{LazyGen(newerKey, _newerGen, _newerCache), ...newerRest},
         ) if olderKey == newKey && oldKey == newerKey =>
         let firstChild = elems[idx]
         let secondChild = elems[idx + 1]
         let _removedChild = Web.Node.removeChild(elem, secondChild)
         let _attachedChild = Web.Node.insertBefore(elem, secondChild, firstChild)
         patchVNodesOnElems(callbacks, elem, elems, idx + 2, olderRest, newerRest)
-      | (list{@implicit_arity LazyGen(olderKey, _olderGen, olderCache), ...olderRest}, _)
+      | (list{LazyGen(olderKey, _olderGen, olderCache), ...olderRest}, _)
         if olderKey == newKey =>
         let oldChild = elems[idx]
         let _removedChild = Web.Node.removeChild(elem, oldChild)
         let oldVdom = olderCache.contents
         let () = newCache := oldVdom
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, olderRest, newRest)
-      | (_, list{@implicit_arity LazyGen(newerKey, _newerGen, _newerCache), ..._newerRest})
+      | (_, list{LazyGen(newerKey, _newerGen, _newerCache), ..._newerRest})
         if newerKey == oldKey =>
         let oldChild = elems[idx]
         let newVdom = newGen()
@@ -538,12 +538,12 @@ and patchVNodesOnElems = (
     }
   | (
       list{
-        @implicit_arity
+        
         Node(oldNamespace, oldTagName, oldKey, _oldUnique, _oldProperties, _oldChildren) as oldNode,
         ...oldRest,
       },
       list{
-        @implicit_arity
+        
         Node(newNamespace, newTagName, newKey, _newUnique, _newProperties, _newChildren) as newNode,
         ...newRest,
       },
@@ -557,7 +557,7 @@ and patchVNodesOnElems = (
       switch (oldRest, newRest) {
       | (
           list{
-            @implicit_arity
+            
             Node(
               olderNamespace,
               olderTagName,
@@ -569,7 +569,7 @@ and patchVNodesOnElems = (
             ...olderRest,
           },
           list{
-            @implicit_arity
+            
             Node(
               newerNamespace,
               newerTagName,
@@ -593,7 +593,7 @@ and patchVNodesOnElems = (
         patchVNodesOnElems(callbacks, elem, elems, idx + 2, olderRest, newerRest)
       | (
           list{
-            @implicit_arity
+            
             Node(
               olderNamespace,
               olderTagName,
@@ -612,7 +612,7 @@ and patchVNodesOnElems = (
       | (
           _,
           list{
-            @implicit_arity
+            
             Node(
               newerNamespace,
               newerTagName,
@@ -683,6 +683,6 @@ let wrapCallbacks:
 let map: ('a => 'b, t<'a>) => t<'b> = (
   (func, vdom) => {
     let tagger = wrapCallbacks(func)
-    @implicit_arity Tagger(Obj.magic(tagger), Obj.magic(vdom))
+    Tagger(Obj.magic(tagger), Obj.magic(vdom))
   }: ('a => 'b, t<'a>) => t<'b>
 )
