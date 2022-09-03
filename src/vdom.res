@@ -7,7 +7,9 @@ type applicationCallbacks<'msg> = {
   on: systemMessage<'msg> => unit,
 }
 type eventHandler<'msg> =
+  // The first argument is a key which is used to compare handlers, since functions can not be compared
   | EventHandlerCallback(string, Web.Node.event => option<'msg>)
+  // No key because the msg can be compared
   | EventHandlerMsg('msg)
 type eventCache<'msg> = {
   handler: Web.Node.event_cb,
@@ -54,7 +56,7 @@ let prop = (key: string, value: string): property<'msg> => @implicit_arity RawPr
 let onCB = (name: string, key: string, cb: Web.Node.event => option<'msg>): property<
   'msg,
 > => @implicit_arity Event(name, @implicit_arity EventHandlerCallback(key, cb), ref(None))
-let onMsg = (name: string, msg: 'msg): property<'msg> => @implicit_arity
+let onMsg = ( name: string, msg: 'msg): property<'msg> => @implicit_arity
 Event(name, EventHandlerMsg(msg), ref(None))
 let attribute = (namespace: string, key: string, value: string): property<'msg> => @implicit_arity
 Attribute(namespace, key, value)
@@ -131,9 +133,9 @@ let eventHandler_GetCB: (eventHandler<'msg>, Web.Node.event) => option<'msg> = (
 let compareEventHandlerTypes = (left: eventHandler<'msg>): (eventHandler<'msg> => bool) =>
   x =>
     switch x {
-    | @implicit_arity EventHandlerCallback(cb, _) =>
+    | @implicit_arity EventHandlerCallback(key, _) =>
       switch left {
-      | @implicit_arity EventHandlerCallback(lcb, _) if cb == lcb => true
+      | @implicit_arity EventHandlerCallback(lkey, _) if key == lkey => true
       | _ => false
       }
     | EventHandlerMsg(msg) =>

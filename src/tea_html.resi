@@ -518,12 +518,12 @@ module Attributes: {
 
 module Events: {
 
-  let onCB: (string, string, Web.Node.event => option<'msg>) => Vdom.property<'msg>
+  let onCB: (~key: string, string, Web.Node.event => option<'msg>) => Vdom.property<'msg>
 
   let onMsg: (string, 'msg) => Vdom.property<'msg>
 
   let on: (~key: string, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
-
+  
   type options = {stopPropagation: bool, preventDefault: bool}
   
   let onWithOptions: (~key: string, string, options, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
@@ -578,7 +578,6 @@ module Events: {
  
  
   let onBlur: 'msg => Vdom.property<'msg>
-
   let onFocus: 'msg => Vdom.property<'msg>
 
 }

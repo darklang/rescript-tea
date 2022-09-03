@@ -648,7 +648,7 @@ module Attributes = {
 module Events = {
   @@ocaml.text(" {1 Primitives} ")
 
-  let onCB = (eventName, key, cb) => onCB(eventName, key, cb)
+  let onCB = (~key,eventName, cb) => onCB(eventName, key, cb)
 
   let onMsg = (eventName, msg) => onMsg(eventName, msg)
 
@@ -663,7 +663,7 @@ module Events = {
   }
 
   let onWithOptions = (~key: string, eventName, options: options, decoder) =>
-  onCB(eventName, key, event => {
+  onCB(~key,eventName, event => {
     if options.stopPropagation {
       stopPropagation(event) |> ignore
     }
@@ -679,7 +679,6 @@ module Events = {
 
   let on = (~key: string, eventName, decoder) =>
   onWithOptions(~key, eventName, defaultOptions, decoder)
-
 
 
   let targetValue = Tea_json.Decoder.at(list{"target", "value"}, Tea_json.Decoder.string)
@@ -712,7 +711,7 @@ module Events = {
   @@ocaml.text(" {1 Form helpers} ")
 
   let onInputOpt = (~key="", msg) =>
-    onCB("input", key, ev =>
+    onCB(~key,"input", ev =>
       switch Js.Undefined.toOption(ev["target"]) {
       | None => None
       | Some(target) =>
@@ -726,7 +725,7 @@ module Events = {
   let onInput = (~key="", msg) => onInputOpt(~key, ev => Some(msg(ev)))
 
   let onCheckOpt = (~key="", msg) =>
-    onCB("change", key, ev =>
+    onCB(~key,"change", ev =>
       switch Js.Undefined.toOption(ev["target"]) {
       | None => None
       | Some(target) =>
@@ -740,7 +739,7 @@ module Events = {
   let onCheck = (~key="", msg) => onCheckOpt(~key, ev => Some(msg(ev)))
 
   let onChangeOpt = (~key="", msg) =>
-    onCB("change", key, ev =>
+    onCB(~key,"change", ev =>
       switch Js.Undefined.toOption(ev["target"]) {
       | None => None
       | Some(target) =>
