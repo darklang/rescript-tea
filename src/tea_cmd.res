@@ -23,7 +23,7 @@ let rec run:
   (callbacks, x) =>
     switch x {
     | NoCmd => ()
-    | @implicit_arity Mapper(mapper, cmd) =>
+    | Mapper(mapper, cmd) =>
       let subCallbacks = mapper(callbacks)
       run(subCallbacks, cmd)
     | Batch(cmds) => List.fold_left(((), cmd) => run(callbacks, cmd), (), cmds)
@@ -33,5 +33,5 @@ let map:
   type a b. (a => b, t<a>) => t<b> =
   (func, cmd) => {
     let mapper = Vdom.wrapCallbacks(func)
-    @implicit_arity Mapper(mapper, cmd)
+    Mapper(mapper, cmd)
   }
