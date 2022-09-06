@@ -1,4 +1,4 @@
-let result_to_option = x =>
+let resultToOption = x =>
   switch x {
   | Ok(a) => Some(a)
   | Error(_) => None
@@ -10,7 +10,7 @@ let first = (fst, x) =>
   | Ok(_) => fst
   }
 
-let error_of_first = (fst, x) =>
+let errorOfFirst = (fst, x) =>
   switch x {
   | Error(e) => Some(e)
   | Ok(_) =>

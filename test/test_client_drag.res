@@ -66,10 +66,7 @@ let subscriptions = model =>
 let px = number => string_of_int(number) ++ "px"
 
 let onMouseDown = onCB("mousedown", ~key="", ev =>
-  Json.Decoder.decodeEvent(
-    Json.Decoder.map(dragStart, Mouse.position),
-    ev,
-  ) |> Result.result_to_option
+  Json.Decoder.decodeEvent(Json.Decoder.map(dragStart, Mouse.position), ev)->Result.resultToOption
 )
 
 let view = model => {

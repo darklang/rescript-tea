@@ -21,7 +21,7 @@ type beginnerProgram<'model, 'msg> = {
 
 type pumpInterface<'model, 'msg> = {
   startup: unit => unit,
-  render_string: 'model => string,
+  renderString: 'model => string,
   handleMsg: ('model, 'msg) => 'model,
   shutdown: Tea_cmd.t<'msg> => unit,
 }

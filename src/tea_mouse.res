@@ -22,9 +22,9 @@ let registerGlobal = (name, key, tagger) => {
     }
     let handler = EventHandlerCallback(key, fn)
     let eventTarget = Webapi.Dom.document |> Webapi.Dom.Document.asEventTarget
-    let cache = eventHandler_Register(callbacks, eventTarget, name, handler)
+    let cache = eventHandlerRegister(callbacks, eventTarget, name, handler)
     () => {
-      let _ = eventHandler_Unregister(eventTarget, name, cache)
+      let _ = eventHandlerUnregister(eventTarget, name, cache)
     }
   }
   Tea_sub.registration(key, enableCall)

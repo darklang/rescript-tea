@@ -1,4 +1,4 @@
-let render_event = (~key="", msg) => {
+let renderEvent = (~key="", msg) => {
   open Vdom
   let enableCall = callbacks => {
     let () = callbacks.on(AddRenderMsg(msg))

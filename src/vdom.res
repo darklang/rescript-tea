@@ -163,7 +163,7 @@ let eventHandler = (
     | Some(msg) => callbacks.contents.enqueue(msg)
     }
 
-let eventHandler_GetCB: (eventHandler<'msg>, Dom.event) => option<'msg> = (
+let eventHandlerGetCB: (eventHandler<'msg>, Dom.event) => option<'msg> = (
   x =>
     switch x {
     | EventHandlerCallback(_, cb) => cb
@@ -186,19 +186,19 @@ let compareEventHandlerTypes = (left: eventHandler<'msg>): (eventHandler<'msg> =
       }
     }
 
-let eventHandler_Register = (
+let eventHandlerRegister = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.eventTarget,
   name: string,
   handlerType: eventHandler<'msg>,
 ): option<eventCache<'msg>> => {
-  let cb = ref(eventHandler_GetCB(handlerType))
+  let cb = ref(eventHandlerGetCB(handlerType))
   let handler = eventHandler(callbacks, cb)
   let () = Webapi.Dom.EventTarget.addEventListener(elem, name, handler)
   Some({handler: handler, cb: cb})
 }
 
-let eventHandler_Unregister = (elem: Dom.eventTarget, name: string): (
+let eventHandlerUnregister = (elem: Dom.eventTarget, name: string): (
   option<eventCache<'msg>> => option<eventCache<'msg>>
 ) =>
   x =>
@@ -209,7 +209,7 @@ let eventHandler_Unregister = (elem: Dom.eventTarget, name: string): (
       None
     }
 
-let eventHandler_Mutate = (
+let eventHandlerMutate = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.eventTarget,
   oldName: string,
@@ -220,23 +220,23 @@ let eventHandler_Mutate = (
   newCache: ref<option<eventCache<'msg>>>,
 ): unit =>
   switch oldCache.contents {
-  | None => newCache := eventHandler_Register(callbacks, elem, newName, newHandlerType)
+  | None => newCache := eventHandlerRegister(callbacks, elem, newName, newHandlerType)
   | Some(oldcache) =>
     if oldName == newName {
       let () = newCache := oldCache.contents
       if compareEventHandlerTypes(oldHandlerType, newHandlerType) {
         ()
       } else {
-        let cb = eventHandler_GetCB(newHandlerType)
+        let cb = eventHandlerGetCB(newHandlerType)
         let () = oldcache.cb := cb
       }
     } else {
-      let () = oldCache := eventHandler_Unregister(elem, oldName, oldCache.contents)
-      let () = newCache := eventHandler_Register(callbacks, elem, newName, newHandlerType)
+      let () = oldCache := eventHandlerUnregister(elem, oldName, oldCache.contents)
+      let () = newCache := eventHandlerRegister(callbacks, elem, newName, newHandlerType)
     }
   }
 
-let patchVNodesOnElems_PropertiesApply_Add = (
+let patchVNodesOnElemsPropertiesApplyAdd = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.element,
   _idx: int,
@@ -251,7 +251,7 @@ let patchVNodesOnElems_PropertiesApply_Add = (
     failwith("TODO:  Add Data Unhandled")
   | Event(name, handlerType, cache) =>
     let eventTarget = Webapi.Dom.Element.asEventTarget(elem)
-    cache := eventHandler_Register(callbacks, eventTarget, name, handlerType)
+    cache := eventHandlerRegister(callbacks, eventTarget, name, handlerType)
   | Style(s) =>
     switch Webapi.Dom.HtmlElement.ofElement(elem) {
     | Some(elem) =>
@@ -261,11 +261,11 @@ let patchVNodesOnElems_PropertiesApply_Add = (
         (),
         s,
       )
-    | None => failwith("Expected htmlelement in patchVNodesOnElems_PropertiesApply_Add")
+    | None => failwith("Expected htmlelement in patchVNodesOnElems_PropertiesApplyAdd")
     }
   }
 
-let patchVNodesOnElems_PropertiesApply_Remove = (
+let patchVNodesOnElemsPropertiesApplyRemove = (
   _callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.element,
   _idx: int,
@@ -280,7 +280,7 @@ let patchVNodesOnElems_PropertiesApply_Remove = (
     failwith("TODO:  Remove Data Unhandled")
   | Event(name, _, cache) =>
     let eventTarget = Webapi.Dom.Element.asEventTarget(elem)
-    cache := eventHandler_Unregister(eventTarget, name, cache.contents)
+    cache := eventHandlerUnregister(eventTarget, name, cache.contents)
   | Style(s) =>
     switch Webapi.Dom.HtmlElement.ofElement(elem) {
     | Some(elem) =>
@@ -294,18 +294,18 @@ let patchVNodesOnElems_PropertiesApply_Remove = (
     }
   }
 
-let patchVNodesOnElems_PropertiesApply_RemoveAdd = (
+let patchVNodesOnElemsPropertiesApplyRemoveAdd = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.element,
   idx: int,
   oldProp: property<'msg>,
   newProp: property<'msg>,
 ): unit => {
-  let () = patchVNodesOnElems_PropertiesApply_Remove(callbacks, elem, idx, oldProp)
-  let () = patchVNodesOnElems_PropertiesApply_Add(callbacks, elem, idx, newProp)
+  let () = patchVNodesOnElemsPropertiesApplyRemove(callbacks, elem, idx, oldProp)
+  let () = patchVNodesOnElemsPropertiesApplyAdd(callbacks, elem, idx, newProp)
 }
 
-let patchVNodesOnElems_PropertiesApply_Mutate = (
+let patchVNodesOnElemsPropertiesApplyMutate = (
   _callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.element,
   _idx: int,
@@ -323,7 +323,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate = (
     failwith("This will never be called because it is gated")
   | Style(s) =>
     switch Webapi.Dom.HtmlElement.ofElement(elem) {
-    | None => failwith("Expected htmlelement in patchVNodesOnElems_PropertiesApply_Mutate")
+    | None => failwith("Expected htmlelement in patchVNodesOnElemsPropertiesApplyMutate")
     | Some(elem) =>
       let elemStyle = Webapi.Dom.HtmlElement.style(elem)
       switch oldProp {
@@ -347,7 +347,7 @@ let patchVNodesOnElems_PropertiesApply_Mutate = (
     }
   }
 
-let rec patchVNodesOnElems_PropertiesApply = (
+let rec patchVNodesOnElemsPropertiesApply = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.element,
   idx: int,
@@ -360,7 +360,7 @@ let rec patchVNodesOnElems_PropertiesApply = (
   | (list{}, list{_newProp, ..._newRest}) => false
   | (list{_oldProp, ..._oldRest}, list{}) => false
   | (list{NoProp, ...oldRest}, list{NoProp, ...newRest}) =>
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
       list{RawProp(oldK, oldV) as oldProp, ...oldRest},
       list{RawProp(newK, newV) as newProp, ...newRest},
@@ -368,9 +368,9 @@ let rec patchVNodesOnElems_PropertiesApply = (
     let () = if oldK == newK && oldV == newV {
       ()
     } else {
-      patchVNodesOnElems_PropertiesApply_Mutate(callbacks, elem, idx, oldProp, newProp)
+      patchVNodesOnElemsPropertiesApplyMutate(callbacks, elem, idx, oldProp, newProp)
     }
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
       list{Attribute(oldNS, oldK, oldV) as oldProp, ...oldRest},
       list{Attribute(newNS, newK, newV) as newProp, ...newRest},
@@ -378,9 +378,9 @@ let rec patchVNodesOnElems_PropertiesApply = (
     let () = if oldNS == newNS && (oldK == newK && oldV == newV) {
       ()
     } else {
-      patchVNodesOnElems_PropertiesApply_Mutate(callbacks, elem, idx, oldProp, newProp)
+      patchVNodesOnElemsPropertiesApplyMutate(callbacks, elem, idx, oldProp, newProp)
     }
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
       list{Data(oldK, oldV) as oldProp, ...oldRest},
       list{Data(newK, newV) as newProp, ...newRest},
@@ -388,15 +388,15 @@ let rec patchVNodesOnElems_PropertiesApply = (
     let () = if oldK == newK && oldV == newV {
       ()
     } else {
-      patchVNodesOnElems_PropertiesApply_Mutate(callbacks, elem, idx, oldProp, newProp)
+      patchVNodesOnElemsPropertiesApplyMutate(callbacks, elem, idx, oldProp, newProp)
     }
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (
       list{Event(oldName, oldHandlerType, oldCache) as _oldProp, ...oldRest},
       list{Event(newName, newHandlerType, newCache) as _newProp, ...newRest},
     ) =>
     let eventTarget = Webapi.Dom.Element.asEventTarget(elem)
-    let () = eventHandler_Mutate(
+    let () = eventHandlerMutate(
       callbacks,
       eventTarget,
       oldName,
@@ -406,25 +406,25 @@ let rec patchVNodesOnElems_PropertiesApply = (
       oldCache,
       newCache,
     )
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (list{Style(oldS) as oldProp, ...oldRest}, list{Style(newS) as newProp, ...newRest}) =>
     let () = if oldS == newS {
       ()
     } else {
-      patchVNodesOnElems_PropertiesApply_Mutate(callbacks, elem, idx, oldProp, newProp)
+      patchVNodesOnElemsPropertiesApplyMutate(callbacks, elem, idx, oldProp, newProp)
     }
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   | (list{oldProp, ...oldRest}, list{newProp, ...newRest}) =>
-    let () = patchVNodesOnElems_PropertiesApply_RemoveAdd(callbacks, elem, idx, oldProp, newProp)
-    patchVNodesOnElems_PropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
+    let () = patchVNodesOnElemsPropertiesApplyRemoveAdd(callbacks, elem, idx, oldProp, newProp)
+    patchVNodesOnElemsPropertiesApply(callbacks, elem, idx + 1, oldRest, newRest)
   }
 
-let patchVNodesOnElems_Properties = (
+let patchVNodesOnElemsProperties = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.element,
   oldProperties: list<property<'msg>>,
   newProperties: list<property<'msg>>,
-): bool => patchVNodesOnElems_PropertiesApply(callbacks, elem, 0, oldProperties, newProperties)
+): bool => patchVNodesOnElemsPropertiesApply(callbacks, elem, 0, oldProperties, newProperties)
 
 let genEmptyProps = (length: int): list<property<'msg>> => {
   let rec aux = (lst, x) =>
@@ -438,7 +438,7 @@ let genEmptyProps = (length: int): list<property<'msg>> => {
 let mapEmptyProps = (props: list<property<'msg>>): list<property<'msg>> =>
   List.map(_ => noProp, props)
 
-let rec patchVNodesOnElems_ReplaceNode = (
+let rec patchVNodesOnElemsReplaceNode = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.node,
   elems: Dom.nodeList,
@@ -449,7 +449,7 @@ let rec patchVNodesOnElems_ReplaceNode = (
     | Node(newNamespace, newTagName, _newKey, _newUnique, newProperties, newChildren) =>
       let oldChild = nodeAt(idx, elems)
       let newChild = createElementNsOptional(newNamespace, newTagName)
-      let _: bool = patchVNodesOnElems_Properties(
+      let _: bool = patchVNodesOnElemsProperties(
         callbacks,
         newChild,
         mapEmptyProps(newProperties),
@@ -463,7 +463,7 @@ let rec patchVNodesOnElems_ReplaceNode = (
     | _ => failwith("Node replacement should never be passed anything but a node itself")
     }
 
-and patchVNodesOnElems_CreateElement = (callbacks: ref<applicationCallbacks<'msg>>): (
+and patchVNodesOnElemsCreateElement = (callbacks: ref<applicationCallbacks<'msg>>): (
   t<'msg> => Dom.node
 ) =>
   x =>
@@ -477,7 +477,7 @@ and patchVNodesOnElems_CreateElement = (callbacks: ref<applicationCallbacks<'msg
       let newChild = createElementNsOptional(newNamespace, newTagName)
 
       @ocaml.warning("-8")
-      let true = patchVNodesOnElems_Properties(
+      let true = patchVNodesOnElemsProperties(
         callbacks,
         newChild,
         mapEmptyProps(newProperties),
@@ -490,11 +490,11 @@ and patchVNodesOnElems_CreateElement = (callbacks: ref<applicationCallbacks<'msg
     | LazyGen(_newKey, newGen, newCache) =>
       let vdom = newGen()
       let () = newCache := vdom
-      patchVNodesOnElems_CreateElement(callbacks, vdom)
-    | Tagger(tagger, vdom) => patchVNodesOnElems_CreateElement(tagger(callbacks), vdom)
+      patchVNodesOnElemsCreateElement(callbacks, vdom)
+    | Tagger(tagger, vdom) => patchVNodesOnElemsCreateElement(tagger(callbacks), vdom)
     }
 
-and patchVNodesOnElems_MutateNode = (
+and patchVNodesOnElemsMutateNode = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Dom.node,
   elems: Dom.nodeList,
@@ -508,7 +508,7 @@ and patchVNodesOnElems_MutateNode = (
       Node(_newNamespace, newTagName, _newKey, newUnique, newProperties, newChildren) as newNode,
     ) =>
     if oldUnique != newUnique || oldTagName != newTagName {
-      patchVNodesOnElems_ReplaceNode(callbacks, elem, elems, idx, newNode)
+      patchVNodesOnElemsReplaceNode(callbacks, elem, elems, idx, newNode)
     } else {
       let child = nodeAt(idx, elems)
       switch Webapi.Dom.Element.ofNode(child) {
@@ -516,19 +516,19 @@ and patchVNodesOnElems_MutateNode = (
       | Some(childElement) =>
         let childChildren = Webapi.Dom.Node.childNodes(child)
         let () = if (
-          patchVNodesOnElems_Properties(callbacks, childElement, oldProperties, newProperties)
+          patchVNodesOnElemsProperties(callbacks, childElement, oldProperties, newProperties)
         ) {
           ()
         } else {
           let () = Js.log(
             "VDom:  Failed swapping properties because the property list length changed, use `noProp` to swap properties instead, not by altering the list structure.  This is a massive inefficiency until this issue is resolved.",
           )
-          patchVNodesOnElems_ReplaceNode(callbacks, elem, elems, idx, newNode)
+          patchVNodesOnElemsReplaceNode(callbacks, elem, elems, idx, newNode)
         }
         patchVNodesOnElems(callbacks, child, childChildren, 0, oldChildren, newChildren)
       }
     }
-  | _ => failwith("Non-node passed to patchVNodesOnElems_MutateNode")
+  | _ => failwith("Non-node passed to patchVNodesOnElemsMutateNode")
   }
 
 and patchVNodesOnElems = (
@@ -555,7 +555,7 @@ and patchVNodesOnElems = (
     patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
   | (list{}, list{}) => ()
   | (list{}, list{newNode, ...newRest}) =>
-    let newChild = patchVNodesOnElems_CreateElement(callbacks, newNode)
+    let newChild = patchVNodesOnElemsCreateElement(callbacks, newNode)
     let _attachedChild = Webapi.Dom.Node.appendChild(elem, ~child=newChild)
     patchVNodesOnElems(callbacks, elem, elems, idx + 1, list{}, newRest)
   | (list{_oldVnode, ...oldRest}, list{}) =>
@@ -600,7 +600,7 @@ and patchVNodesOnElems = (
         let oldChild = nodeAt(idx, elems)
         let newVdom = newGen()
         let () = newCache := newVdom
-        let newChild = patchVNodesOnElems_CreateElement(callbacks, newVdom)
+        let newChild = patchVNodesOnElemsCreateElement(callbacks, newVdom)
         let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChild, ~before=oldChild)
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldVNodes, newRest)
       | _ =>
@@ -630,7 +630,7 @@ and patchVNodesOnElems = (
     if oldKey == newKey && oldKey != "" {
       patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
     } else if oldKey == "" || newKey == "" {
-      let () = patchVNodesOnElems_MutateNode(callbacks, elem, elems, idx, oldNode, newNode)
+      let () = patchVNodesOnElemsMutateNode(callbacks, elem, elems, idx, oldNode, newNode)
       patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
     } else {
       switch (oldRest, newRest) {
@@ -700,17 +700,17 @@ and patchVNodesOnElems = (
           },
         ) if oldNamespace == newerNamespace && (oldTagName == newerTagName && oldKey == newerKey) =>
         let oldChild = nodeAt(idx, elems)
-        let newChild = patchVNodesOnElems_CreateElement(callbacks, newNode)
+        let newChild = patchVNodesOnElemsCreateElement(callbacks, newNode)
         let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChild, ~before=oldChild)
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldVNodes, newRest)
       | _ =>
-        let () = patchVNodesOnElems_MutateNode(callbacks, elem, elems, idx, oldNode, newNode)
+        let () = patchVNodesOnElemsMutateNode(callbacks, elem, elems, idx, oldNode, newNode)
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
       }
     }
   | (list{_oldVnode, ...oldRest}, list{newNode, ...newRest}) =>
     let oldChild = nodeAt(idx, elems)
-    let newChild = patchVNodesOnElems_CreateElement(callbacks, newNode)
+    let newChild = patchVNodesOnElemsCreateElement(callbacks, newNode)
     let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChild, ~before=oldChild)
     let _removedChild = Webapi.Dom.Node.removeChild(elem, ~child=oldChild)
     patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
@@ -734,7 +734,7 @@ let patchVNodeIntoElement = (
   newVNode: t<'msg>,
 ): list<t<'msg>> => patchVNodesIntoElement(callbacks, elem, list{oldVNode}, list{newVNode})
 
-let wrapCallbacks_On:
+let wrapCallbacksOn:
   type a b. (a => b, systemMessage<a>) => systemMessage<b> =
   (func, x) =>
     switch x {
@@ -754,7 +754,7 @@ let wrapCallbacks:
           callbacks.contents.enqueue(new_msg)
         },
         on: smsg => {
-          let new_smsg = wrapCallbacks_On(func, smsg)
+          let new_smsg = wrapCallbacksOn(func, smsg)
           callbacks.contents.on(new_smsg)
         },
       },

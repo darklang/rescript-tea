@@ -201,7 +201,7 @@ module Decoder = {
       switch (decoder1(value), decoder2(value)) {
       | (Ok(v1), Ok(v2)) => Ok(mapper(v1, v2))
       | (e1, e2) =>
-        switch Tea_result.error_of_first(e1, e2) {
+        switch Tea_result.errorOfFirst(e1, e2) {
         | None => failwith("Impossible case")
         | Some(e) => Error("map2 -> " ++ e)
         }
