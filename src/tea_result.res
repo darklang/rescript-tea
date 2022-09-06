@@ -5,7 +5,7 @@ let first = (fst, x) =>
   }
 
 
-let result_to_option = x =>
+let resultToOption = x =>
   switch x {
   | Ok(a) => Some(a)
   | Error(_) => None

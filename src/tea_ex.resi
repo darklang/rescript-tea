@@ -1,4 +1,4 @@
-let render_event: (~key: string=?, 'msg) => Tea_sub.t<'msg>
+let renderEvent: (~key: string=?, 'msg) => Tea_sub.t<'msg>
 
 module LocalStorage: {
   let length: Tea_task.t<int, string>
