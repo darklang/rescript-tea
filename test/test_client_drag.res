@@ -69,7 +69,7 @@ let onMouseDown = onCB("mousedown", ~key= "", ev =>
   Json.Decoder.decodeEvent(
     Json.Decoder.map(dragStart, Mouse.position),
     ev,
-  ) |> Tea_result.result_to_option
+  ) |> Tea_result.resultToOption
 )
 
 let view = model => {

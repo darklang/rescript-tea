@@ -19,7 +19,7 @@ type error<'parsedata> =
   | BadStatus(response)
   | BadPayload('parsedata, response)
 
-let string_of_error: error<'msg> => string
+let stringOfError: error<'msg> => string
 type header = Header(string, string)
 type expect<'res> = Expect(bodyType, response => result<'res, string>)
 type requestEvents<'msg> = {

@@ -18,7 +18,7 @@ type beginnerProgram<'model, 'msg> = {
 }
 type pumpInterface<'model, 'msg> = {
   startup: unit => unit,
-  render_string: 'model => string,
+  renderString: 'model => string,
   handleMsg: ('model, 'msg) => 'model,
   shutdown: Tea_cmd.t<'msg> => unit,
 }
@@ -73,7 +73,7 @@ let programStateWrapper = (initModel, pump, shutdown) => {
     }: Vdom.applicationCallbacks<'msg>
   )
   let () = callbacks := finalizedCBs
-  let pi_requestShutdown = () => {
+  let piRequestShutdown = () => {
     let () =
       callbacks := {
           enqueue: _msg => Js.log("INVALID message enqueued when shut down"),
@@ -82,12 +82,12 @@ let programStateWrapper = (initModel, pump, shutdown) => {
     let cmd = shutdown(model.contents)
     let () = pumperInterface.shutdown(cmd)
   }
-  let render_string = () => {
-    let rendered = pumperInterface.render_string(model.contents)
+  let renderString = () => {
+    let rendered = pumperInterface.renderString(model.contents)
     rendered
   }
   let () = pumperInterface.startup()
-  makeProgramInterface(~pushMsg=handler, ~shutdown=pi_requestShutdown, ~getHtmlString=render_string)
+  makeProgramInterface(~pushMsg=handler, ~shutdown=piRequestShutdown, ~getHtmlString=renderString)
 }
 let programLoop = (update, view, subscriptions, initModel, initCmd, x) =>
   switch x {
@@ -103,7 +103,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd, x) =>
           let () = Tea_cmd.run(callbacks, initCmd)
           let () = handleSubscriptionChange(initModel)
         },
-        render_string: model => {
+        renderString: model => {
           let vdom = view(model)
           let rendered = Vdom.renderToHtmlString(vdom)
           rendered
@@ -173,7 +173,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd, x) =>
         let () = nextFrameID := Some(-1)
         let () = doRender(16)
       }
-      let render_string = model => {
+      let renderString = model => {
         let vdom = view(model)
         let rendered = Vdom.renderToHtmlString(vdom)
         rendered
@@ -195,7 +195,7 @@ let programLoop = (update, view, subscriptions, initModel, initCmd, x) =>
       }
       {
         startup: handlerStartup,
-        render_string: render_string,
+        renderString: renderString,
         handleMsg: handler,
         shutdown: handlerShutdown,
       }

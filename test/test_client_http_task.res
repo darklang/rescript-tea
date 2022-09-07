@@ -16,12 +16,12 @@ let update = (model, x) =>
       model,
       Http.getString("https://jsonplaceholder.typicode.com/todos/1")
       |> Http.toTask
-      |> Task.mapError(Http.string_of_error)
+      |> Task.mapError(Http.stringOfError)
       |> Task.andThen(res => Ex.LocalStorage.setItem("todo-1", res))
       |> Task.andThen(() =>
         Http.getString("https://jsonplaceholder.typicode.com/todos/2")
         |> Http.toTask
-        |> Task.mapError(Http.string_of_error)
+        |> Task.mapError(Http.stringOfError)
       )
       |> Task.andThen(res => Ex.LocalStorage.setItem("todo-2", res))
       |> Task.andThen(() => Task.succeed("both saved"))

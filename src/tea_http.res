@@ -22,7 +22,7 @@ type error<'parsedata> =
   | BadStatus(response)
   | BadPayload('parsedata, response)
 
-let string_of_error = x =>
+let stringOfError = x =>
   switch x {
   | BadUrl(url) => "Bad Url: " ++ url
   | Timeout => "Timeout"

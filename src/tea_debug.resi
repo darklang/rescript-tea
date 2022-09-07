@@ -1,6 +1,6 @@
 type debug_msg<'msg> = ClientMsg('msg) | TogglePaused | SelectHistoryItem(int) | ToggleDetails
 
-let client_msg: 'msg => debug_msg<'msg>
+let clientMsg: 'msg => debug_msg<'msg>
 
 type state = Running | Paused(int)
 type debug_model<'model> = {history: list<(string, 'model)>, state: state, show_details: bool}
@@ -19,13 +19,13 @@ let debug: (
   debug_model<'model> => Tea_cmd.t<debug_msg<'msg>>,
 )
 
-let debug_program: ('msg => string, Tea_app.program<'flags, 'model, 'msg>) => Tea_app.program<
+let debugProgram: ('msg => string, Tea_app.program<'flags, 'model, 'msg>) => Tea_app.program<
   'flags,
   debug_model<'model>,
   debug_msg<'msg>,
 >
 
-let debug_navigation_program: (
+let debugNavigationProgram: (
   'msg => string,
   Tea_navigation.navigationProgram<'flags, 'model, 'msg>,
 ) => Tea_navigation.navigationProgram<'flags, debug_model<'model>, debug_msg<'msg>>

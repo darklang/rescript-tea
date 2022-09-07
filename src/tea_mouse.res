@@ -21,9 +21,9 @@ let registerGlobal = (name, key, tagger) => {
     }
     let handler = EventHandlerCallback(key, fn)
     let elem = Web_node.document_node
-    let cache = eventHandler_Register(callbacks, elem, name, handler)
+    let cache = eventHandlerRegister(callbacks, elem, name, handler)
     () => {
-      let _ = eventHandler_Unregister(elem, name, cache)
+      let _ = eventHandlerUnregister(elem, name, cache)
     }
   }
   Tea_sub.registration(key, enableCall)
