@@ -1,14 +1,19 @@
+
+open Webapi
+open Webapi.Dom
+open Document
+
 let focus = id =>
   Tea_cmd.call(_enqueue => {
     let ecb = _ =>
-      switch Js.Nullable.toOption(Web.Document.getElementById(id)) {
+      switch (getElementById(document,id)->Belt.Option.flatMap(HtmlInputElement.ofElement)){
       | None => Js.log(("Attempted to focus a non-existant element of: ", id))
-      | Some(elem) => Web.Node.focus(elem)
+      | Some(elem) => HtmlInputElement.focus(elem)
       }
 
     /* One to get out of the current render frame */
-    let cb = _ => ignore(Web.Window.requestAnimationFrame(ecb))
+    let cb = _ => ignore(requestAnimationFrame(ecb))
     /* And another to properly focus */
-    ignore(Web.Window.requestAnimationFrame(cb))
+    ignore(requestAnimationFrame(cb))
     ()
   })

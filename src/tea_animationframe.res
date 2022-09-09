@@ -1,3 +1,5 @@
+open Webapi
+
 type t = {
   time: Tea_time.t,
   delta: Tea_time.t,
@@ -7,10 +9,10 @@ let every = (~key="", tagger) => {
   open Vdom
   let enableCall = callbacks => {
     /* let () = Js.log ("rAF", "enable") in */
-    let lastTime = ref(Web.Date.now())
+    let lastTime = ref(Js.Date.now())
     let id = ref(None)
     let rec onFrame = _time => {
-      let time = Web.Date.now()
+      let time = Js.Date.now()
       switch id.contents {
       | None => ()
       | Some(_i) =>
@@ -27,17 +29,17 @@ let every = (~key="", tagger) => {
         switch id.contents {
         | None => ()
         | Some(_stillActive) =>
-          let () = id := Some(Web.Window.requestAnimationFrame(onFrame))
+          let () = id := Some(requestCancellableAnimationFrame(onFrame))
         }
       }
     }
-    let () = id := Some(Web.Window.requestAnimationFrame(onFrame))
+    let () = id := Some(requestCancellableAnimationFrame(onFrame))
     () =>
       switch id.contents {
       | None => ()
       | Some(i) =>
         /* let () = Js.log ("rAF", "disable") in */
-        let () = Web.Window.cancelAnimationFrame(i)
+        let () = cancelAnimationFrame(i)
         let () = id := None
       }
   }

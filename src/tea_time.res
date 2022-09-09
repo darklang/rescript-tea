@@ -7,21 +7,22 @@ type t = float
 type 'msg myCmd =
   | Delay of t * (unit -> 'msg) */
 
+
 let every = (~key, interval, tagger) => {
   open Vdom
   let enableCall = callbacks => {
-    let id = Web.Window.setInterval(() => callbacks.enqueue(tagger(Web.Date.now())), interval)
+    let id = Js.Global.setIntervalFloat(() => callbacks.enqueue(tagger(Js.Date.now())), interval)
     /* let () = Js.log ("Time.every", "enable", interval, tagger, callbacks) in */
     () =>
       /* let () = Js.log ("Time.every", "disable", id, interval, tagger, callbacks) in */
-      Web.Window.clearTimeout(id)
+      Js.Global.clearInterval(id)
   }
   Tea_sub.registration(key, enableCall)
 }
 
 let delay = (msTime, msg) =>
   Tea_cmd.call(callbacks => {
-    let _unhandledID = Web.Window.setTimeout(() => {
+    let _unhandledID = Js.Global.setTimeoutFloat(() => {
       open Vdom
       callbacks.contents.enqueue(msg)
     }, msTime)
