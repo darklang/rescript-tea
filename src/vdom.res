@@ -671,12 +671,12 @@ let wrapCallbacks:
       ref,
       {
         enqueue: (msg: a) => {
-          let new_msg = func(msg)
-          callbacks.contents.enqueue(new_msg)
+          let newMsg = func(msg)
+          callbacks.contents.enqueue(newMsg)
         },
         on: smsg => {
-          let new_smsg = wrapCallbacksOn(func, smsg)
-          callbacks.contents.on(new_smsg)
+          let newSmsg = wrapCallbacksOn(func, smsg)
+          callbacks.contents.on(newSmsg)
         },
       },
     )

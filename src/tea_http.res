@@ -1,4 +1,4 @@
-type response_status = {
+type responseStatus = {
   code: int,
   message: string,
 }
@@ -9,7 +9,7 @@ type responseBody = Web.XMLHttpRequest.responseBody
 
 type response = {
   url: string,
-  status: response_status,
+  status: responseStatus,
   headers: Belt.Map.String.t<string>,
   body: responseBody,
 }
