@@ -1,5 +1,3 @@
-open Webapi
-
 type t = {
   time: Tea_time.t,
   delta: Tea_time.t,
@@ -29,17 +27,17 @@ let every = (~key="", tagger) => {
         switch id.contents {
         | None => ()
         | Some(_stillActive) =>
-          let () = id := Some(requestCancellableAnimationFrame(onFrame))
+          let () = id := Some(Webapi.requestCancellableAnimationFrame(onFrame))
         }
       }
     }
-    let () = id := Some(requestCancellableAnimationFrame(onFrame))
+    let () = id := Some(Webapi.requestCancellableAnimationFrame(onFrame))
     () =>
       switch id.contents {
       | None => ()
       | Some(i) =>
         /* let () = Js.log ("rAF", "disable") in */
-        let () = cancelAnimationFrame(i)
+        let () = Webapi.cancelAnimationFrame(i)
         let () = id := None
       }
   }
