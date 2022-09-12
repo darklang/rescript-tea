@@ -37,8 +37,8 @@ let result = (promise, msg) => {
         |> Js.Promise.catch(x =>
           switch x {
           | err =>
-            let err_to_string = err => j`$err`
-            let reject = enq(Error(err_to_string(err)))
+            let errToString = err => j`$err`
+            let reject = enq(Error(errToString(err)))
             Js.Promise.resolve(reject)
           }
         )

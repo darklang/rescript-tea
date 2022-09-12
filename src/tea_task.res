@@ -139,7 +139,7 @@ let rec sequence = x =>
   | list{task, ...remainingTasks} => map2((l, r) => list{l, ...r}, task, sequence(remainingTasks))
   }
 
-let testing_deop = ref(true)
+let testingDeop = ref(true)
 
 let testing = () => {
   let doTest = (expected, Task(task)) => {
@@ -156,7 +156,7 @@ let testing = () => {
   let f = fail(86)
   let () = doTest(Error(86), f)
   let r = () =>
-    if testing_deop.contents {
+    if testingDeop.contents {
       succeed(42)
     } else {
       fail(3.14)

@@ -1,4 +1,4 @@
-type debug_msg<'msg> =
+type debugMsg<'msg> =
   | ClientMsg('msg)
   | TogglePaused
   | SelectHistoryItem(int)
@@ -22,11 +22,11 @@ let debug = (
   subscriptions: 'model => Tea_sub.t<'msg>,
   shutdown: 'model => Tea_cmd.t<'msg>,
 ): (
-  (('model, Tea_cmd.t<'msg>)) => (debug_model<'model>, Tea_cmd.t<debug_msg<'msg>>),
-  (debug_model<'model>, debug_msg<'msg>) => (debug_model<'model>, Tea_cmd.t<debug_msg<'msg>>),
-  debug_model<'model> => Vdom.t<debug_msg<'msg>>,
-  debug_model<'model> => Tea_sub.t<debug_msg<'msg>>,
-  debug_model<'model> => Tea_cmd.t<debug_msg<'msg>>,
+  (('model, Tea_cmd.t<'msg>)) => (debug_model<'model>, Tea_cmd.t<debugMsg<'msg>>),
+  (debug_model<'model>, debugMsg<'msg>) => (debug_model<'model>, Tea_cmd.t<debugMsg<'msg>>),
+  debug_model<'model> => Vdom.t<debugMsg<'msg>>,
+  debug_model<'model> => Tea_sub.t<debugMsg<'msg>>,
+  debug_model<'model> => Tea_cmd.t<debugMsg<'msg>>,
 ) => {
   let initDebug = ((cmodel, cmd)) => (
     {
@@ -361,7 +361,7 @@ let debug = (
 let debugProgram: (
   'msg => string,
   Tea_app.program<'flags, 'model, 'msg>,
-) => Tea_app.program<'flags, debug_model<'model>, debug_msg<'msg>> = (
+) => Tea_app.program<'flags, debug_model<'model>, debugMsg<'msg>> = (
   string_of_msg,
   {init, update, view, subscriptions, shutdown},
 ) => {
@@ -385,7 +385,7 @@ let debugProgram: (
 let debugNavigationProgram: (
   'msg => string,
   Tea_navigation.navigationProgram<'flags, 'model, 'msg>,
-) => Tea_navigation.navigationProgram<'flags, debug_model<'model>, debug_msg<'msg>> = (
+) => Tea_navigation.navigationProgram<'flags, debug_model<'model>, debugMsg<'msg>> = (
   string_of_msg,
   {init, update, view, subscriptions, shutdown},
 ) => {
@@ -411,7 +411,7 @@ let beginnerProgram: (
   'msg => string,
   Js.null_undefined<Web.Node.t>,
   unit,
-) => Tea_app.programInterface<debug_msg<'msg>> = (
+) => Tea_app.programInterface<debugMsg<'msg>> = (
   {model, update, view},
   string_of_msg,
   pnode,
@@ -435,7 +435,7 @@ let standardProgram: (
   'msg => string,
   Js.null_undefined<Web.Node.t>,
   'flags,
-) => Tea_app.programInterface<debug_msg<'msg>> = (
+) => Tea_app.programInterface<debugMsg<'msg>> = (
   {init, update, view, subscriptions},
   string_of_msg,
   pnode,
@@ -459,7 +459,7 @@ let program: (
   'msg => string,
   Js.null_undefined<Web.Node.t>,
   'flags,
-) => Tea_app.programInterface<debug_msg<'msg>> = (
+) => Tea_app.programInterface<debugMsg<'msg>> = (
   {init, update, view, subscriptions, shutdown},
   string_of_msg,
   pnode,
@@ -484,7 +484,7 @@ let navigationProgram: (
   'msg => string,
   Js.null_undefined<Web.Node.t>,
   'flags,
-) => Tea_app.programInterface<debug_msg<'msg>> = (
+) => Tea_app.programInterface<debugMsg<'msg>> = (
   location_to_msg,
   {init, update, view, subscriptions, shutdown},
   string_of_msg,

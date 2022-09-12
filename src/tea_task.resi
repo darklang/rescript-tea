@@ -53,6 +53,6 @@ let map6: (
 
 let sequence: list<t<'msg, 'b>> => t<list<'msg>, 'b>
 
-let testing_deop: ref<bool>
+let testingDeop: ref<bool>
 
 let testing: unit => unit
