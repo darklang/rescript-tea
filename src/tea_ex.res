@@ -10,21 +10,19 @@ module LocalStorage = {
   open Tea_task
 
   let length = nativeBinding(cb =>{
-    let value = Dom.Storage.length(Dom.Storage.localStorage)
-    if(Js.testAny(value)) {
-    cb(Error("localStorage is not available"))}
-    else{cb(Ok(value))}
+      switch Dom.Storage.length(Dom.Storage.localStorage){
+      | value=>cb(Ok(value))
+      | exception Not_found =>cb(Error("localStorage is not available"))
+    }}
+  )
+
+  let clear = nativeBinding(cb =>
+    switch Dom.Storage.clear(Dom.Storage.localStorage) {
+    | value => cb(Ok(value))
+    | exception Not_found => cb(Error("localStorage is not available"))
     }
   )
 
-  let clear = nativeBinding(cb =>{
-    if(Js.testAny(Dom.Storage.clear(Dom.Storage.localStorage))){
-      cb(Error("localStorage is not available"))}
-    else{
-      let value =Dom.Storage.clear(Dom.Storage.localStorage)
-       cb(Ok(value))
-    }}
-  )
   let clearCmd = () => Tea_task.attemptOpt(_ => None, clear)
   let key = idx =>
     nativeBinding(cb =>
@@ -42,22 +40,20 @@ module LocalStorage = {
     )
 
     let removeItem = key =>
-    nativeBinding(cb =>{
-      let value=Dom.Storage.removeItem(key, Dom.Storage.localStorage)
-      if(Js.testAny( value)) {
-      cb(Error("localStorage is not available"))}
-      else{
-        cb(Ok(value))}}
-      
+    nativeBinding(cb =>
+      switch Dom.Storage.removeItem(key, Dom.Storage.localStorage) {
+      | value => cb(Ok(value))
+      | exception Not_found => cb(Error("localStorage is not available"))
+      }
     )
 
-    let removeItemCmd = key => Tea_task.attemptOpt(_ => None, removeItem(key))
+ let removeItemCmd = key => Tea_task.attemptOpt(_ => None, removeItem(key))
   let setItem = (key, value) =>
     nativeBinding(cb =>
-      if( Js.testAny(Dom.Storage.setItem(key, value, Dom.Storage.localStorage))) {
-      cb(Error("localStorage is not available"))}
-      else{cb(Ok())}
-      
+      switch Dom.Storage.setItem(key, value, Dom.Storage.localStorage) {
+      | exception Not_found => cb(Error("localStorage is not available"))
+      | _ => cb(Ok())
+      }
     )
   let setItemCmd = (key, value) => Tea_task.attemptOpt(_ => None, setItem(key, value))
 }
