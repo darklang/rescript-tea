@@ -8,47 +8,58 @@ let renderEvent = (~key="", msg) => {
 }
 module LocalStorage = {
   open Tea_task
-  let length = nativeBinding(cb =>
-    switch Web.Window.LocalStorage.length(Web.Window.window) {
-    | None => cb(Error("localStorage is not available"))
-    | Some(value) => cb(Ok(value))
+
+  let length = nativeBinding(cb => {
+    try {
+      cb(Ok(Dom.Storage.length(Dom.Storage.localStorage)))
+    } catch {
+    | _e => cb(Error("localStorage is not available"))
     }
-  )
+  })
+
   let clear = nativeBinding(cb =>
-    switch Web.Window.LocalStorage.clear(Web.Window.window) {
-    | None => cb(Error("localStorage is not available"))
-    | Some(value) => cb(Ok(value))
+    try {
+      cb(Ok(Dom.Storage.clear(Dom.Storage.localStorage)))
+    } catch {
+    | _e => cb(Error("localStorage is not available"))
     }
   )
+
   let clearCmd = () => Tea_task.attemptOpt(_ => None, clear)
   let key = idx =>
     nativeBinding(cb =>
-      switch Web.Window.LocalStorage.key(Web.Window.window, idx) {
-      | None => cb(Error("localStorage is not available"))
-      | Some(value) => cb(Ok(value))
+      try {
+        cb(Ok(Dom.Storage.key(idx, Dom.Storage.localStorage)))
+      } catch {
+      | _e => cb(Error("localStorage is not available"))
       }
     )
   let getItem = key =>
     nativeBinding(cb =>
-      switch Web.Window.LocalStorage.getItem(Web.Window.window, key) {
-      | None => cb(Error("localStorage is not available"))
-      | Some(value) => cb(Ok(value))
+      try {
+        cb(Ok(Dom.Storage.getItem(key, Dom.Storage.localStorage)))
+      } catch {
+      | _e => cb(Error("localStorage is not available"))
       }
     )
+
   let removeItem = key =>
     nativeBinding(cb =>
-      switch Web.Window.LocalStorage.removeItem(Web.Window.window, key) {
-      | None => cb(Error("localStorage is not available"))
-      | Some(value) => cb(Ok(value))
+      try {
+        cb(Ok(Dom.Storage.removeItem(key, Dom.Storage.localStorage)))
+      } catch {
+      | _e => cb(Error("localStorage is not available"))
       }
     )
+
   let removeItemCmd = key => Tea_task.attemptOpt(_ => None, removeItem(key))
   let setItem = (key, value) =>
-    nativeBinding(cb =>
-      switch Web.Window.LocalStorage.setItem(Web.Window.window, key, value) {
-      | None => cb(Error("localStorage is not available"))
-      | Some() => cb(Ok())
+    nativeBinding(cb => {
+      try {
+        cb(Ok(Dom.Storage.setItem(key, value, Dom.Storage.localStorage)))
+      } catch {
+      | _e => cb(Error("localStorage is not available"))
       }
-    )
+    })
   let setItemCmd = (key, value) => Tea_task.attemptOpt(_ => None, setItem(key, value))
 }
