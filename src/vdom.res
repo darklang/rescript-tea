@@ -194,14 +194,17 @@ let eventHandlerMutate = (
 let patchVNodesOnElemsPropertiesApplyAdd = (
   callbacks: ref<applicationCallbacks<'msg>>,
   elem: Web.Node.t,
+  // elem: Webapi.Dom.CssStyleDeclaration.t,
   _idx: int,
 ): (property<'msg> => unit) =>
   x =>
     switch x {
     | NoProp => ()
     | RawProp(k, v) => Web.Node.setProp(elem, k, v)
+    // | RawProp(k, v) => Webapi.Dom.CssStyleDeclaration.setPropertyValue(elem, k, v)
     | Attribute(namespace, k, v) =>
       Web.Node.setAttributeNsOptional(elem, namespace, k, v)
+      // Webapi.Dom.Element.setAttributeNS(elem, namespace, k, v)
     | Data(k, v) =>
       Js.log(("TODO:  Add Data Unhandled", k, v))
       failwith("TODO:  Add Data Unhandled")
