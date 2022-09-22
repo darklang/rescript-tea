@@ -42,13 +42,13 @@ let view = model => {
           list{on(~key="", "click", Decoder.map(set_value, clientX))},
           list{text("on \"click\", use clientX value")},
         ),
-        input'(
-          list{
-            type'("text"),
-            on(~key="", "input", Decoder.map(v => v |> int_of_string |> set_value, targetValue)),
-          },
-          list{},
-        ),
+        // input'(
+        //   list{
+        //     type'("text"),
+        //     on(~key="", "input", Decoder.map(v => v |> int_of_string |> set_value, targetValue)),
+        //   },
+        //   list{},
+        // ),
       },
     ),
   )

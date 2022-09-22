@@ -680,12 +680,23 @@ module Events = {
   let on = (~key: string, eventName, decoder) =>
   onWithOptions(~key, eventName, defaultOptions, decoder)
 
+  open JsonCombinators
+  let rec at = (key_path, decoder) =>
+    switch key_path {
+    | list{key} => Json.Decode.field(key, decoder)
+    | list{first, ...rest} => Json.Decode.field(first, at(rest, decoder))
+    | list{} =>
+      \"@@"(
+        raise,
+        Invalid_argument("Expected key_path to contain at least one element"),
+      )
+    }
 
-  let targetValue = Tea_json.Decoder.at(list{"target", "value"}, Tea_json.Decoder.string)
+  let targetValue = at(list{"target", "value"}, Json.Decode.string)
 
-  let targetChecked = Tea_json.Decoder.at(list{"target", "checked"}, Tea_json.Decoder.bool)
+  let targetChecked = at(list{"target", "checked"}, Json.Decode.bool)
 
-  let keyCode = Tea_json.Decoder.field("keyCode", Tea_json.Decoder.int)
+  let keyCode = Json.Decode.field("keyCode", Json.Decode.int)
 
   let preventDefaultOn = (~key="", eventName, decoder) =>
     onWithOptions(~key, eventName, {...defaultOptions, preventDefault: true}, decoder)

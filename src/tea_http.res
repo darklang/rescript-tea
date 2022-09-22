@@ -257,8 +257,8 @@ module Progress = {
       (callbacks, ev) => {
         open Vdom
         let lengthComputable = {
-          open Tea_json.Decoder
-          switch decodeValue(field("lengthComputable", bool), ev) {
+          open JsonCombinators
+          switch Json.Decode.decode(ev, Json.Decode.field("lengthComputable", Json.Decode.bool)) {
           | Error(_e) => false
           | Ok(v) => v
           }

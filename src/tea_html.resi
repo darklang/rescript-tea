@@ -530,11 +530,11 @@ module Events: {
 
   let defaultOptions: options
 
-  let targetValue: Tea_json.Decoder.t<Web.Json.t, string>
+  let targetValue: JsonCombinators.Json.Decode.t<string>
 
-  let targetChecked: Tea_json.Decoder.t<Web.Json.t, bool>
+  let targetChecked: JsonCombinators.Json.Decode.t<bool>
 
-  let keyCode: Tea_json.Decoder.t<Web.Json.t, int>
+  let keyCode: JsonCombinators.Json.Decode.t<int>
 
   let preventDefaultOn: (~key: string=?, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
 
