@@ -31,12 +31,21 @@ type msg =
 
 let toUrl = _model => ""
 
+let decodeString = (decoder, string) =>
+    try {
+      let value = Js.Json.parseExn(string)
+      JsonCombinators.Json.Decode.decode(value,decoder)
+    } catch {
+    /* | JsException e -> Error ("Given an invalid JSON: " ^ e) */
+    | _ => Error("Invalid JSON string")
+    }
+
+
 let fromUrl = url => {
   let mapDecoder = {
-    open Json.Decoder
-    array(array(int))
+    JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.int))
   }
-  switch Json.Decoder.decodeString(mapDecoder, url) {
+  switch decodeString(mapDecoder, url) {
   | Ok(map) => map
   | Error(_) => Array.make_matrix(32, 32, 0)
   }
