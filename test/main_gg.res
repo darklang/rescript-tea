@@ -31,16 +31,7 @@ type msg =
 
 let toUrl = _model => ""
 
-let decodeString = (decoder, string) =>
-    try {
-      let value = Js.Json.parseExn(string)
-      JsonCombinators.Json.Decode.decode(value,decoder)
-    } catch {
-    /* | JsException e -> Error ("Given an invalid JSON: " ^ e) */
-    | _ => Error("Invalid JSON string")
-    }
-
-
+open Rescript_JsonCombinators_extended
 let fromUrl = url => {
   let mapDecoder = {
     JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.int))

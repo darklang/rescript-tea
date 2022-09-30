@@ -681,16 +681,7 @@ module Events = {
   onWithOptions(~key, eventName, defaultOptions, decoder)
 
   open JsonCombinators
-  let rec at = (key_path, decoder) =>
-    switch key_path {
-    | list{key} => Json.Decode.field(key, decoder)
-    | list{first, ...rest} => Json.Decode.field(first, at(rest, decoder))
-    | list{} =>
-      \"@@"(
-        raise,
-        Invalid_argument("Expected key_path to contain at least one element"),
-      )
-    }
+  open Rescript_JsonCombinators_extended
 
   let targetValue = at(list{"target", "value"}, Json.Decode.string)
 
