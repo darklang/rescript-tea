@@ -31,7 +31,7 @@ type msg =
 
 let toUrl = _model => ""
 
-open Rescript_JsonCombinators_extended
+open Rescript_json_combinators_extended
 let fromUrl = url => {
   let mapDecoder = {
     JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.int))

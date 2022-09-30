@@ -681,7 +681,7 @@ module Events = {
   onWithOptions(~key, eventName, defaultOptions, decoder)
 
   open JsonCombinators
-  open Rescript_JsonCombinators_extended
+  open Rescript_json_combinators_extended
 
   let targetValue = at(list{"target", "value"}, Json.Decode.string)
 
