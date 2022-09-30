@@ -264,14 +264,13 @@ module Progress = {
           }
         }
         if lengthComputable {
-          open Tea_json.Decoder
-          let decoder = map2(
-            (bytes, bytesExpected) => {bytes: bytes, bytesExpected: bytesExpected},
-            field("loaded", int),
-            field("total", int),
-          )
+          open JsonCombinators
+          let decoder = Json.Decode.object(field =>{
+            bytes: field.required(. "loaded", Json.Decode.int),
+            bytesExpected: field.required(. "total", Json.Decode.int),
+          })
 
-          switch decodeValue(decoder, ev) {
+          switch Json.Decode.decode(ev, decoder) {
           | Error(_e) => ()
           | Ok(t) => callbacks.contents.enqueue(toMessage(t))
           }
