@@ -522,11 +522,11 @@ module Events: {
 
   let onMsg: (string, 'msg) => Vdom.property<'msg>
 
-  let on: (~key: string, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
+  let on: (~key: string, string, JsonCombinators.Json.Decode.t<'b>) => Vdom.property<'b>
   
   type options = {stopPropagation: bool, preventDefault: bool}
   
-  let onWithOptions: (~key: string, string, options, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
+  let onWithOptions: (~key: string, string, options, JsonCombinators.Json.Decode.t<'b>) => Vdom.property<'b>
 
   let defaultOptions: options
 
@@ -536,8 +536,7 @@ module Events: {
 
   let keyCode: JsonCombinators.Json.Decode.t<int>
 
-  let preventDefaultOn: (~key: string=?, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
-
+  let preventDefaultOn: (~key: string=?, string, JsonCombinators.Json.Decode.t<'b>) => Vdom.property<'b>
   
   
   

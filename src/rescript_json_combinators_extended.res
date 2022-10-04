@@ -21,4 +21,7 @@ let decodeString = (decoder, string) =>
     | _ => Error("Invalid JSON string")
     }
 
-let map2 = (f, decode1, decode2, json) => f(decode1(json), decode2(json))
+let succeed = v => Json.Decode.custom((. _json) => v)
+
+let decodeEvent = (decoder, value: Web_node.event) =>
+  value->Obj.magic->Json.decode(decoder)

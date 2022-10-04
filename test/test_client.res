@@ -22,14 +22,14 @@ let attribute_removal = {
   open Test_client_attribute_removal
   main
 }
-let drag = {
-  open Test_client_drag
-  main
-}
-let on_with_options = {
-  open Test_client_on_with_options
-  main
-}
+// let drag = {
+//   open Test_client_drag
+//   main
+// }
+// let on_with_options = {
+//   open Test_client_on_with_options
+//   main
+// }
 let http_task = {
   open Test_client_http_task
   main

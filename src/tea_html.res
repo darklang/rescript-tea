@@ -663,14 +663,14 @@ module Events = {
   }
 
   let onWithOptions = (~key: string, eventName, options: options, decoder) =>
-  onCB(~key,eventName, event => {
+    onCB(~key,eventName, event => {
     if options.stopPropagation {
       stopPropagation(event) |> ignore
     }
     if options.preventDefault {
       preventDefault(event) |> ignore
     }
-    let result = event |> Tea_json.Decoder.decodeEvent(decoder)
+    let result = event |> Rescript_json_combinators_extended.decodeEvent(decoder)
       switch result {
       | Ok(a) => Some(a)
       | Error(_) => None
@@ -754,7 +754,7 @@ module Events = {
 
   let onChange = (~key="", msg) => onChangeOpt(~key, ev => Some(msg(ev)))
 
-  let onSubmit = msg => preventDefaultOn("submit", Tea_json.Decoder.succeed(msg))
+  let onSubmit = msg => preventDefaultOn("submit", Rescript_json_combinators_extended.succeed(msg))
 
   @@ocaml.text(" {1 Focus helpers} ")
 

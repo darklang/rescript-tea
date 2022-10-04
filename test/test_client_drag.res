@@ -1,104 +1,104 @@
-open Tea
-open Tea.App
-open Tea_html.Attributes
-open Tea_html.Events 
-open Tea.Html
-open Tea.Mouse
+// open Tea
+// open Tea.App
+// open Tea_html.Attributes
+// open Tea_html.Events 
+// open Tea.Html
+// open Tea.Mouse
 
-@deriving({accessors: accessors})
-type msg =
-  | DragStart(position)
-  | DragAt(position)
-  | DragEnd(position)
+// @deriving({accessors: accessors})
+// type msg =
+//   | DragStart(position)
+//   | DragAt(position)
+//   | DragEnd(position)
 
-type drag = {
-  start: position,
-  current: position,
-}
+// type drag = {
+//   start: position,
+//   current: position,
+// }
 
-type model = {
-  position: position,
-  drag: option<drag>,
-}
+// type model = {
+//   position: position,
+//   drag: option<drag>,
+// }
 
-let init = () => ({position: {x: 200, y: 200}, drag: None}, Cmd.none)
+// let init = () => ({position: {x: 200, y: 200}, drag: None}, Cmd.none)
 
-let getPosition = ({position, drag}) =>
-  switch drag {
-  | None => position
+// let getPosition = ({position, drag}) =>
+//   switch drag {
+//   | None => position
 
-  | Some({start, current}) => {
-      x: position.x + current.x - start.x,
-      y: position.y + current.y - start.y,
-    }
-  }
+//   | Some({start, current}) => {
+//       x: position.x + current.x - start.x,
+//       y: position.y + current.y - start.y,
+//     }
+//   }
 
-let updateHelp = ({position} as model, x) =>
-  switch x {
-  | DragStart(xy) => {
-      position: position,
-      drag: Some({start: xy, current: xy}),
-    }
+// let updateHelp = ({position} as model, x) =>
+//   switch x {
+//   | DragStart(xy) => {
+//       position: position,
+//       drag: Some({start: xy, current: xy}),
+//     }
 
-  | DragAt(xy) => {
-      position: position,
-      drag: switch model.drag {
-      | None => None
-      | Some(drag) => Some({...drag, current: xy})
-      },
-    }
+//   | DragAt(xy) => {
+//       position: position,
+//       drag: switch model.drag {
+//       | None => None
+//       | Some(drag) => Some({...drag, current: xy})
+//       },
+//     }
 
-  | DragEnd(_) => {
-      position: getPosition(model),
-      drag: None,
-    }
-  }
+//   | DragEnd(_) => {
+//       position: getPosition(model),
+//       drag: None,
+//     }
+//   }
 
-let update = (model, msg) => (updateHelp(model, msg), Cmd.none)
+// let update = (model, msg) => (updateHelp(model, msg), Cmd.none)
 
-let subscriptions = model =>
-  switch model.drag {
-  | None => Sub.none
+// let subscriptions = model =>
+//   switch model.drag {
+//   | None => Sub.none
 
-  | Some(_) => Sub.batch(list{Mouse.moves(dragAt), Mouse.ups(dragEnd)})
-  }
+//   | Some(_) => Sub.batch(list{Mouse.moves(dragAt), Mouse.ups(dragEnd)})
+//   }
 
-let px = number => string_of_int(number) ++ "px"
+// let px = number => string_of_int(number) ++ "px"
 
-let onMouseDown = onCB("mousedown", ~key= "", ev =>
-  Json.Decoder.decodeEvent(
-    Json.Decoder.map(dragStart, Mouse.position),
-    ev,
-  ) |> Tea_result.resultToOption
-)
+// let onMouseDown = onCB("mousedown", ~key= "", ev =>
+//   Rescript_json_combinators_extended.decodeEvent(
+//     JsonCombinators.Json.Decode.map(Mouse.position, dragStart),
+//     ev,
+//   ) |> Tea_result.resultToOption
+// )
 
-let view = model => {
-  let realPosition = getPosition(model)
-  div(
-    list{
-      onMouseDown,
-      styles(list{
-        ("background-color", "#3C8D2F"),
-        ("cursor", "move"),
-        ("width", "100px"),
-        ("height", "100px"),
-        ("border-radius", "4px"),
-        ("position", "absolute"),
-        ("left", px(realPosition.x)),
-        ("top", px(realPosition.y)),
-        ("color", "white"),
-        ("display", "flex"),
-        ("align-items", "center"),
-        ("justify-content", "center"),
-      }),
-    },
-    list{text("Drag Me!")},
-  )
-}
+// let view = model => {
+//   let realPosition = getPosition(model)
+//   div(
+//     list{
+//       onMouseDown,
+//       styles(list{
+//         ("background-color", "#3C8D2F"),
+//         ("cursor", "move"),
+//         ("width", "100px"),
+//         ("height", "100px"),
+//         ("border-radius", "4px"),
+//         ("position", "absolute"),
+//         ("left", px(realPosition.x)),
+//         ("top", px(realPosition.y)),
+//         ("color", "white"),
+//         ("display", "flex"),
+//         ("align-items", "center"),
+//         ("justify-content", "center"),
+//       }),
+//     },
+//     list{text("Drag Me!")},
+//   )
+// }
 
-let main = standardProgram({
-  init: init,
-  update: update,
-  view: view,
-  subscriptions: subscriptions,
-})
+// let main = standardProgram({
+//   init: init,
+//   update: update,
+//   view: view,
+//   subscriptions: subscriptions,
+// })
