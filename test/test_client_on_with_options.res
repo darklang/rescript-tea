@@ -16,7 +16,7 @@ let view = model => {
   open Tea.Html.Attributes
   open Tea.Html.Events
   open JsonCombinators
-//   let clientX = Json.Decode.field("clientX", Json.Decode.int)
+  let clientX = Json.Decode.field("clientX", Json.Decode.int)
   div(
     list{},
     List.map(
@@ -38,10 +38,10 @@ let view = model => {
           },
           list{text("a link with prevent default")},
         ),
-        // button(
-        //   list{on(~key="", "click", Json.Decode.map(clientX,set_value))},
-        //   list{text("on \"click\", use clientX value")},
-        // ),
+        button(
+          list{on(~key="", "click", Json.Decode.map(clientX,(. v)=> set_value(v)))},
+          list{text("on \"click\", use clientX value")},
+        ),
         input'(
           list{
             type'("text"),

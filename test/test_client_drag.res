@@ -1,7 +1,7 @@
 open Tea
 open Tea.App
 open Tea_html.Attributes
-// open Tea_html.Events 
+open Tea_html.Events 
 open Tea.Html
 open Tea.Mouse
 
@@ -65,18 +65,18 @@ let subscriptions = model =>
 
 let px = number => string_of_int(number) ++ "px"
 
-// let onMouseDown = onCB("mousedown", ~key= "", ev =>
-//   Rescript_json_combinators_extended.decodeEvent(
-//     JsonCombinators.Json.Decode.map(Mouse.position, dragStart),
-//     ev,
-//   ) |> Tea_result.resultToOption
-// )
+let onMouseDown = onCB("mousedown", ~key= "", ev =>
+  Rescript_json_combinators_extended.decodeEvent(
+    JsonCombinators.Json.Decode.map(Mouse.position, (. v)=>  dragStart(v)),
+    ev,
+  ) |> Tea_result.resultToOption
+)
 
 let view = model => {
   let realPosition = getPosition(model)
   div(
     list{
-    //   onMouseDown,
+      onMouseDown,
       styles(list{
         ("background-color", "#3C8D2F"),
         ("cursor", "move"),
