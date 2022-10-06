@@ -15,7 +15,7 @@ let view = model => {
   open Tea.Html
   open Tea.Html.Attributes
   open Tea.Html.Events
-//   open JsonCombinators
+  open JsonCombinators
 //   let clientX = Json.Decode.field("clientX", Json.Decode.int)
   div(
     list{},
@@ -42,13 +42,13 @@ let view = model => {
         //   list{on(~key="", "click", Json.Decode.map(clientX,set_value))},
         //   list{text("on \"click\", use clientX value")},
         // ),
-        // input'(
-        //   list{
-        //     type'("text"),
-        //     on(~key="", "input", Json.Decode.map(targetValue, v => v |> int_of_string |> set_value)),
-        //   },
-        //   list{},
-        // ),
+        input'(
+          list{
+            type'("text"),
+            on(~key="", "input",((. v) => v |> int_of_string |> set_value)|> Json.Decode.map(targetValue)),
+          },
+          list{},
+        ),
       },
     ),
   )
