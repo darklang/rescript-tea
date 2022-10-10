@@ -10,7 +10,7 @@
       "type": "dev"
     }
   ],
-  "bs-dependencies": ["rescript-webapi"],
+  "bs-dependencies": ["rescript-webapi", "@glennsl/rescript-json-combinators"],
   "warnings": {
     "error" : true
   }

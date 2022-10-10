@@ -3,18 +3,18 @@ type position = {
   y: int,
 }
 
-let position = {
-  open Tea_json.Decoder
-  map2((x, y) => {x: x, y: y}, field("pageX", int), field("pageY", int))
-}
+open JsonCombinators
+let position = Json.Decode.object(field => {
+    x: field.required(. "pageX", Json.Decode.int),
+    y: field.required(. "pageY", Json.Decode.int),
+  })
 
 let registerGlobal = (name, key, tagger) => {
   open Vdom
   let enableCall = callbacks_base => {
     let callbacks = ref(callbacks_base)
     let fn = ev => {
-      open Tea_json.Decoder
-      switch decodeEvent(position, ev) {
+      switch Rescript_json_combinators_extended.decodeEvent(position, ev) {
       | Error(_) => None
       | Ok(pos) => Some(tagger(pos))
       }

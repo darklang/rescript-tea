@@ -15,8 +15,8 @@ let view = model => {
   open Tea.Html
   open Tea.Html.Attributes
   open Tea.Html.Events
-  open Tea.Json
-  let clientX = Decoder.field("clientX", Decoder.int)
+  open JsonCombinators
+  let clientX = Json.Decode.field("clientX", Json.Decode.int)
   div(
     list{},
     List.map(
@@ -24,7 +24,7 @@ let view = model => {
       list{
         model |> string_of_int |> text,
         button(list{onClick(Click)}, list{text("onClick")}),
-        button(list{on(~key="", "click", Decoder.succeed(Click))}, list{text("on \"click\"")}),
+        button(list{on(~key="", "click", Rescript_json_combinators_extended.succeed(Click))}, list{text("on \"click\"")}),
         a(list{href("https://www.google.com")}, list{text("a normal link")}),
         a(
           list{
@@ -33,19 +33,19 @@ let view = model => {
               ~key="",
               "click",
               {...defaultOptions, preventDefault: true},
-              Tea.Json.Decoder.succeed(Click),
+              Rescript_json_combinators_extended.succeed(Click),
             ),
           },
           list{text("a link with prevent default")},
         ),
         button(
-          list{on(~key="", "click", Decoder.map(set_value, clientX))},
+          list{on(~key="", "click", Json.Decode.map(clientX,(. v)=> set_value(v)))},
           list{text("on \"click\", use clientX value")},
         ),
         input'(
           list{
             type'("text"),
-            on(~key="", "input", Decoder.map(v => v |> int_of_string |> set_value, targetValue)),
+            on(~key="", "input",((. v) => v |> int_of_string |> set_value)|> Json.Decode.map(targetValue)),
           },
           list{},
         ),

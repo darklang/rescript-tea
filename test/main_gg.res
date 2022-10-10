@@ -31,12 +31,12 @@ type msg =
 
 let toUrl = _model => ""
 
+open Rescript_json_combinators_extended
 let fromUrl = url => {
   let mapDecoder = {
-    open Json.Decoder
-    array(array(int))
+    JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.array(JsonCombinators.Json.Decode.int))
   }
-  switch Json.Decoder.decodeString(mapDecoder, url) {
+  switch decodeString(mapDecoder, url) {
   | Ok(map) => map
   | Error(_) => Array.make_matrix(32, 32, 0)
   }

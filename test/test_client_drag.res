@@ -66,8 +66,8 @@ let subscriptions = model =>
 let px = number => string_of_int(number) ++ "px"
 
 let onMouseDown = onCB("mousedown", ~key= "", ev =>
-  Json.Decoder.decodeEvent(
-    Json.Decoder.map(dragStart, Mouse.position),
+  Rescript_json_combinators_extended.decodeEvent(
+    JsonCombinators.Json.Decode.map(Mouse.position, (. v)=>  dragStart(v)),
     ev,
   ) |> Tea_result.resultToOption
 )
