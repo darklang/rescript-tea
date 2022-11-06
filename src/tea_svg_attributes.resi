@@ -30,7 +30,7 @@ let baseProfile: string => Vdom.property<'msg>
 
 let bbox: string => Vdom.property<'msg>
 
-let begin': string => Vdom.property<'msg>
+let begin: string => Vdom.property<'msg>
 
 let bias: string => Vdom.property<'msg>
 
@@ -40,7 +40,7 @@ let calcMode: string => Vdom.property<'msg>
 
 let capHeight: string => Vdom.property<'msg>
 
-let class': string => Vdom.property<'msg>
+let class: string => Vdom.property<'msg>
 
 let clipPathUnits: string => Vdom.property<'msg>
 
@@ -72,7 +72,7 @@ let edgeMode: string => Vdom.property<'msg>
 
 let elevation: string => Vdom.property<'msg>
 
-let end': string => Vdom.property<'msg>
+let end: string => Vdom.property<'msg>
 
 let exponent: string => Vdom.property<'msg>
 
@@ -166,7 +166,7 @@ let max: string => Vdom.property<'msg>
 
 let media: string => Vdom.property<'msg>
 
-let method': string => Vdom.property<'msg>
+let method: string => Vdom.property<'msg>
 
 let min: string => Vdom.property<'msg>
 
@@ -298,7 +298,7 @@ let textLength: string => Vdom.property<'msg>
 
 let title: string => Vdom.property<'msg>
 
-let to': string => Vdom.property<'msg>
+let to: string => Vdom.property<'msg>
 
 let transform: string => Vdom.property<'msg>
 

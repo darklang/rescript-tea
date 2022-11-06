@@ -46,8 +46,6 @@ type t = _xmlhttprequest
 
 @send external getResponseHeader: t => Js.null<string> = "getResponseHeader"
 
-@send external \"open": (t, string, string, bool, string, string) => unit = "open"
-
 @send external send__string: (t, Js.null<string>) => unit = "send"
 
 @send external send__formdata: (t, Webapi.FormData.t) => unit = "send"
@@ -74,7 +72,7 @@ let getAllResponseHeadersAsList: t => result<list<(string, string)>, errors>
 
 let getAllResponseHeadersAsDict: t => result<Belt.Map.String.t<string>, errors>
 
-let open_: (string, string, ~async: bool=?, ~user: string=?, ~password: string=?, t) => unit
+let open': (string, string, ~async: bool=?, ~user: string=?, ~password: string=?, t) => unit
 
 let overrideMimeType: (string, t) => unit
 

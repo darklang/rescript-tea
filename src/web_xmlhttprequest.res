@@ -61,7 +61,7 @@ type t = _xmlhttprequest
 @send external abort: t => unit = "abort"
 @send external getAllResponseHeaders: t => Js.null<string> = "getAllResponseHeaders"
 @send external getResponseHeader: t => Js.null<string> = "getResponseHeader"
-@send external \"open": (t, string, string, bool, string, string) => unit = "open"
+@send external open': (t, string, string, bool, string, string) => unit = "open"
 @send external overrideMimeType: (t, string) => unit = "overrideMimeType"
 @send external send: t => unit = "send"
 @send external send__string: (t, Js.null<string>) => unit = "send"
@@ -127,10 +127,10 @@ let getAllResponseHeadersAsDict = (x: t): result<Belt.Map.String.t<string>, erro
   }
 }
 
-let open_ = (method': string, url: string, ~async=true, ~user="", ~password="", x: t) =>
-  x->\"open"(method', url, async, user, password)
+let open' = (method': string, url: string, ~async=true, ~user="", ~password="", x: t) =>
+  x->open'(method', url, async, user, password)
 
-let overrideMimeType = (mimetype: string, x: t): unit => x->overrideMimeType(mimetype)
+let overrideMimeType = (mimetype: string, x: t): unit => overrideMimeType(x, mimetype)
 
 let send = (body: body, x: t): unit =>
   switch body {

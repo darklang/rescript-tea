@@ -95,7 +95,7 @@ let img = (~key="", ~unique="", props, nodes) => fullnode("", "img", key, unique
 let select = (~key="", ~unique="", props, nodes) =>
   fullnode("", "select", key, unique, props, nodes)
 
-let option' = (~key="", ~unique="", props, nodes) =>
+let option = (~key="", ~unique="", props, nodes) =>
   fullnode("", "option", key, unique, props, nodes)
 
 let form = (~key="", ~unique="", props, nodes) => fullnode("", "form", key, unique, props, nodes)
@@ -193,7 +193,7 @@ let track = (~key="", ~unique="", props, nodes) => fullnode("", "track", key, un
 
 let embed = (~key="", ~unique="", props, nodes) => fullnode("", "embed", key, unique, props, nodes)
 
-let object' = (~key="", ~unique="", props, nodes) =>
+let object = (~key="", ~unique="", props, nodes) =>
   fullnode("", "object", key, unique, props, nodes)
 
 let param = (~key="", ~unique="", props, nodes) => fullnode("", "param", key, unique, props, nodes)
@@ -210,7 +210,7 @@ let dfn = (~key="", ~unique="", props, nodes) => fullnode("", "dfn", key, unique
 
 let abbr = (~key="", ~unique="", props, nodes) => fullnode("", "abbr", key, unique, props, nodes)
 
-let var' = (~key="", ~unique="", props, nodes) => fullnode("", "var", key, unique, props, nodes)
+let var = (~key="", ~unique="", props, nodes) => fullnode("", "var", key, unique, props, nodes)
 
 let samp = (~key="", ~unique="", props, nodes) => fullnode("", "samp", key, unique, props, nodes)
 
@@ -247,14 +247,14 @@ let src = str => attribute("", "src", str)
 
 let title = str => attribute("", "title", str)
 
-let class' = name => prop("className", name)
+let class = name => prop("className", name)
 
 let classList = classes =>
   classes
   |> List.filter(((_fst, snd)) => snd)
   |> List.map(((fst, _snd)) => fst)
   |> String.concat(" ")
-  |> class'
+  |> class
 
 let type' = typ => prop("type", typ)
 
@@ -295,7 +295,7 @@ let target = t => prop("target", t)
 
 let action = a => prop("action", a)
 
-let method' = m => prop("method", m)
+let method = m => prop("method", m)
 
 /* Events */
 
