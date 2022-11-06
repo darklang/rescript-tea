@@ -6,15 +6,12 @@
   "main": "index.js",
   "scripts": {
     "clean": "rescript clean",
-    "clean:all": "rescript -clean-world",
     "build": "rescript build -with-deps",
-    "watch": "rescript build -w -with-deps",
     "build:test:client": "browserify --standalone=Test_client --outfile=lib/js/test/app_test_client.js lib/js/test/test_client.js",
+    "build:test": "run-p build:test:*",
+    "watch": "rescript build -w -with-deps",
     "watch:test:client": "watchify --standalone=Test_client --outfile=lib/js/test/app_test_client.js lib/js/test/test_client.js",
     "watch:test": "run-p watch watch:test:*",
-    "prebuild:test": "run-s build",
-    "build:test": "run-p build:test:*",
-    "pretest": "run-s build:test",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
