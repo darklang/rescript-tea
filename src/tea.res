@@ -9,8 +9,6 @@ module App = Tea_app
 
 module Debug = Tea_debug
 
-module Html = Tea_html
-
 module Html2 = Tea_html2
 
 module Svg = Tea_svg

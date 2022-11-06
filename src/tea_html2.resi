@@ -909,35 +909,62 @@ module Attributes: {
   let manifest: string => Vdom.property<'msg>
 }
 module Events: {
+  type options = {stopPropagation: bool, preventDefault: bool}
+
   let onCB: (string, string, Dom.event => option<'a>) => Vdom.property<'a>
+
   let onMsg: (string, 'a) => Vdom.property<'a>
+
   let on: (~key: string, string, Tea_json.Decoder.t<'a, 'b>) => Vdom.property<'b>
+
   let onWithOptions: (
     ~key: string,
     string,
-    Tea_html.options,
-    Tea_json.Decoder.t<'a, 'b>,
+    options,
+    Tea_json.Decoder.t<'msg, 'b>,
   ) => Vdom.property<'b>
-  let defaultOptions: Tea_html.options
+
+  let defaultOptions: options
+
   let targetValue: Tea_json.Decoder.t<Js.Json.t, string>
+
   let targetChecked: Tea_json.Decoder.t<Js.Json.t, bool>
+
   let keyCode: Tea_json.Decoder.t<Js.Json.t, int>
-  let preventDefaultOn: (~key: string=?, string, Tea_json.Decoder.t<'a, 'b>) => Vdom.property<'b>
+
+  let preventDefaultOn: (~key: string=?, string, Tea_json.Decoder.t<'msg, 'b>) => Vdom.property<'b>
+
   let onClick: 'a => Vdom.property<'a>
+
   let onDoubleClick: 'a => Vdom.property<'a>
+
   let onMouseDown: 'a => Vdom.property<'a>
+
   let onMouseUp: 'a => Vdom.property<'a>
+
   let onMouseEnter: 'a => Vdom.property<'a>
+
   let onMouseLeave: 'a => Vdom.property<'a>
+
   let onMouseOver: 'a => Vdom.property<'a>
+
   let onMouseOut: 'a => Vdom.property<'a>
+
   let onInputOpt: (~key: string=?, string => option<'a>) => Vdom.property<'a>
+
   let onInput: (~key: string=?, string => 'a) => Vdom.property<'a>
+
   let onCheckOpt: (~key: string=?, bool => option<'a>) => Vdom.property<'a>
+
   let onCheck: (~key: string=?, bool => 'a) => Vdom.property<'a>
+
   let onChangeOpt: (~key: string=?, string => option<'a>) => Vdom.property<'a>
+
   let onChange: (~key: string=?, string => 'a) => Vdom.property<'a>
+
   let onSubmit: 'a => Vdom.property<'a>
+
   let onBlur: 'a => Vdom.property<'a>
+
   let onFocus: 'a => Vdom.property<'a>
 }

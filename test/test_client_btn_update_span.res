@@ -1,5 +1,7 @@
 open Tea.App
-open Tea.Html
+open Tea_html2.Events
+open Tea_html2.Attributes
+open! Tea.Html2
 
 @deriving({accessors: accessors}) type msg = Trigger
 
@@ -14,7 +16,7 @@ let update' = (model, x) =>
 
 let render_model = x =>
   switch x {
-  | (Some(_), Some(_)) => input'(list{value("This should be on screen")}, list{})
+  | (Some(_), Some(_)) => input(list{value("This should be on screen")}, list{})
   | _ => span(list{}, list{text("nothing")})
   }
 
