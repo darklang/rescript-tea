@@ -624,12 +624,7 @@ module Attributes = {
 
   let lang = code => prop("lang", code)
 
-  let spellcheck = b =>
-    if b {
-      prop("spellcheck", "spellcheck")
-    } else {
-      noProp
-    }
+  let spellcheck = (b: bool) => Vdom.attribute("", "spellcheck", string_of_bool(b))
 
   let tabindex = n => attribute("", "tabindex", string_of_int(n))
 
