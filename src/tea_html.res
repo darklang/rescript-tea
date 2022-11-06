@@ -110,7 +110,7 @@ let math = (~key="", ~unique="", props, nodes) => fullnode("", "math", key, uniq
 
 let form = (~key="", ~unique="", props, nodes) => fullnode("", "form", key, unique, props, nodes)
 
-let input = (~key="", ~unique="", props, nodes) => fullnode("", "input", key, unique, props, nodes)
+let input' = (~key="", ~unique="", props, nodes) => fullnode("", "input", key, unique, props, nodes)
 
 let textarea = (~key="", ~unique="", props, nodes) =>
   fullnode("", "textarea", key, unique, props, nodes)
@@ -648,7 +648,7 @@ module Attributes = {
 module Events = {
   @@ocaml.text(" {1 Primitives} ")
 
-  let onCB = (eventName, key, cb) => onCB(eventName, key, cb)
+  let onCB = (~key, eventName, cb) => onCB(~key, eventName, cb)
 
   let onMsg = (eventName, msg) => onMsg(eventName, msg)
 
@@ -663,7 +663,7 @@ module Events = {
   }
 
   let onWithOptions = (~key: string, eventName, options: options, decoder) =>
-    onCB(eventName, key, event => {
+    onCB(~key, eventName, event => {
       if options.stopPropagation {
         stopPropagation(event) |> ignore
       }
@@ -710,7 +710,7 @@ module Events = {
   @@ocaml.text(" {1 Form helpers} ")
 
   let onInputOpt = (~key="", msg) =>
-    onCB("input", key, (ev: Dom.event) => {
+    onCB(~key, "input", (ev: Dom.event) => {
       let element = Webapi.Dom.Event.target(ev) |> Webapi.Dom.EventTarget.unsafeAsElement
       switch Webapi.Dom.HtmlElement.ofElement(element) {
       | None => None
@@ -721,7 +721,7 @@ module Events = {
   let onInput = (~key="", msg) => onInputOpt(~key, ev => Some(msg(ev)))
 
   let onCheckOpt = (~key="", msg) =>
-    onCB("check", key, (ev: Dom.event) => {
+    onCB(~key, "check", (ev: Dom.event) => {
       let element = Webapi.Dom.Event.target(ev) |> Webapi.Dom.EventTarget.unsafeAsElement
       switch Webapi.Dom.HtmlElement.ofElement(element) {
       | None => None
@@ -732,7 +732,7 @@ module Events = {
   let onCheck = (~key="", msg) => onCheckOpt(~key, ev => Some(msg(ev)))
 
   let onChangeOpt = (~key="", msg) =>
-    onCB("change", key, (ev: Dom.event) => {
+    onCB(~key, "change", (ev: Dom.event) => {
       let element = Webapi.Dom.Event.target(ev) |> Webapi.Dom.EventTarget.unsafeAsElement
       switch Webapi.Dom.HtmlElement.ofElement(element) {
       | None => None
