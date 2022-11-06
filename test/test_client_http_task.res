@@ -1,5 +1,6 @@
 open Tea
 open Tea.Html
+open Tea_html.Events
 
 @deriving(accessors)
 type msg =

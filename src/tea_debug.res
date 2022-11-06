@@ -58,7 +58,7 @@ let debug = (
     }
 
   let view_styles = () => {
-    open Tea_html2
+    open Tea_html
     let rule = (selector, properties) =>
       properties
       |> List.map(((k, v)) => k ++ (":" ++ v))
@@ -207,8 +207,8 @@ let debug = (
   }
 
   let view_details = model => {
-    open Tea_html2
-    module A = Tea_html2.Attributes
+    open Tea_html
+    module A = Tea_html.Attributes
     let format = %raw(`
       function (v) {
         var formatRecord = function (data, labels) {
@@ -268,9 +268,9 @@ let debug = (
   }
 
   let view_history = (model, selected_index) => {
-    open Tea_html2
-    module A = Tea_html2.Attributes
-    module E = Tea_html2.Events
+    open Tea_html
+    module A = Tea_html.Attributes
+    module E = Tea_html.Events
     let count = List.length(model.history)
     \"@@"(ul(list{A.class("history")}), List.mapi((i, (msg, cmodel)) => {
         let selected = i == selected_index
@@ -305,9 +305,9 @@ let debug = (
   }
 
   let view' = model => {
-    open Tea_html2
-    module A = Tea_html2.Attributes
-    module E = Tea_html2.Events
+    open Tea_html
+    module A = Tea_html.Attributes
+    module E = Tea_html.Events
     let (selected_index, selected_model, paused) = switch model.state {
     | Running => (0, List.hd(model.history) |> snd, false)
     | Paused(index) => (index, List.nth(model.history, index) |> snd, true)
