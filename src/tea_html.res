@@ -5,14 +5,6 @@ open Vdom
 
 let map = Vdom.map
 
-@send
-external preventDefault: Dom.event => unit = "preventDefault"
-@send
-external stopPropagation: Dom.event => unit = "stopPropagation"
-
-let stopPropagation = t => stopPropagation(t)
-let preventDefault = t => preventDefault(t)
-
 @@ocaml.text(" {1 Primitives} ")
 
 let text = str => text(str)
@@ -671,16 +663,12 @@ module Events = {
   let onWithOptions = (~key: string, eventName, options: options, decoder) =>
     onCB(~key, eventName, event => {
       if options.stopPropagation {
-        stopPropagation(event) |> ignore
+        Webapi.Dom.Event.stopPropagation(Obj.magic(event))
       }
       if options.preventDefault {
-        preventDefault(event) |> ignore
+        Webapi.Dom.Event.preventDefault(Obj.magic(event))
       }
-      let result = event |> Tea_json.Decoder.decodeEvent(decoder)
-      switch result {
-      | Ok(a) => Some(a)
-      | Error(_) => None
-      }
+      event |> Tea_json.Decoder.decodeEvent(decoder) |> Tea_result.resultToOption
     })
 
   let on = (~key: string, eventName, decoder) =>
