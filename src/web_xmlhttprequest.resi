@@ -1,31 +1,31 @@
 type unresolved
 type xmlHttpRequestUpload
-type event_readystatechange = Js.Json.t
-type event_abort = Js.Json.t
-type event_error = Js.Json.t
-type event_load = Js.Json.t
-type event_loadstart = Js.Json.t
-type event_progress = Js.Json.t
-type event_timeout = Js.Json.t
-type event_loadend = Js.Json.t
+type eventReadystatechange = Js.Json.t
+type eventAbort = Js.Json.t
+type eventError = Js.Json.t
+type eventLoad = Js.Json.t
+type eventLoadstart = Js.Json.t
+type eventProgress = Js.Json.t
+type eventTimeout = Js.Json.t
+type eventLoadend = Js.Json.t
 
 type _xmlhttprequest = {
-  "onabort": event_abort => unit,
-  "onabort#=": Js_OO.Meth.arity1<(event_abort => unit) => unit>,
-  "onerror": event_error => unit,
-  "onerror#=": Js_OO.Meth.arity1<(event_error => unit) => unit>,
-  "onload": event_load => unit,
-  "onload#=": Js_OO.Meth.arity1<(event_load => unit) => unit>,
-  "onloadend": event_loadend => unit,
-  "onloadend#=": Js_OO.Meth.arity1<(event_loadend => unit) => unit>,
-  "onloadstart": event_loadstart => unit,
-  "onloadstart#=": Js_OO.Meth.arity1<(event_loadstart => unit) => unit>,
-  "onprogress": event_progress => unit,
-  "onprogress#=": Js_OO.Meth.arity1<(event_progress => unit) => unit>,
-  "onreadystatechange": event_readystatechange => unit,
-  "onreadystatechange#=": Js_OO.Meth.arity1<(event_readystatechange => unit) => unit>,
-  "ontimeout": event_timeout => unit,
-  "ontimeout#=": Js_OO.Meth.arity1<(event_timeout => unit) => unit>,
+  "onabort": eventAbort => unit,
+  "onabort#=": Js_OO.Meth.arity1<(eventAbort => unit) => unit>,
+  "onerror": eventError => unit,
+  "onerror#=": Js_OO.Meth.arity1<(eventError => unit) => unit>,
+  "onload": eventLoad => unit,
+  "onload#=": Js_OO.Meth.arity1<(eventLoad => unit) => unit>,
+  "onloadend": eventLoadend => unit,
+  "onloadend#=": Js_OO.Meth.arity1<(eventLoadend => unit) => unit>,
+  "onloadstart": eventLoadstart => unit,
+  "onloadstart#=": Js_OO.Meth.arity1<(eventLoadstart => unit) => unit>,
+  "onprogress": eventProgress => unit,
+  "onprogress#=": Js_OO.Meth.arity1<(eventProgress => unit) => unit>,
+  "onreadystatechange": eventReadystatechange => unit,
+  "onreadystatechange#=": Js_OO.Meth.arity1<(eventReadystatechange => unit) => unit>,
+  "ontimeout": eventTimeout => unit,
+  "ontimeout#=": Js_OO.Meth.arity1<(eventTimeout => unit) => unit>,
   "readyState": int,
   "response": Js.null<unresolved>,
   "responseText": string,
@@ -46,11 +46,11 @@ type t = _xmlhttprequest
 
 @send external getResponseHeader: t => Js.null<string> = "getResponseHeader"
 
-@send external send__string: (t, Js.null<string>) => unit = "send"
+@send external sendString: (t, Js.null<string>) => unit = "send"
 
-@send external send__formdata: (t, Webapi.FormData.t) => unit = "send"
+@send external sendFormData: (t, Webapi.FormData.t) => unit = "send"
 
-@send external send__document: (t, Dom.document) => unit = "send"
+@send external sendDocument: (t, Dom.document) => unit = "send"
 
 @new external create: unit => t = "XMLHttpRequest"
 
@@ -101,9 +101,9 @@ type responseBody =
   | TextResponse(string)
   | RawResponse(string, unit)
 
-let set_onreadystatechange: (event_readystatechange => unit, t) => unit
+let set_onreadystatechange: (eventReadystatechange => unit, t) => unit
 
-let get_onreadystatechange: (t, event_readystatechange) => unit
+let get_onreadystatechange: (t, eventReadystatechange) => unit
 
 let readyState: t => state
 
@@ -131,30 +131,30 @@ let set_withCredentials: (bool, t) => unit
 
 let get_withCredentials: t => bool
 
-let set_onabort: (event_abort => unit, t) => unit
+let set_onabort: (eventAbort => unit, t) => unit
 
-let get_onabort: (t, event_abort) => unit
+let get_onabort: (t, eventAbort) => unit
 
-let set_onerror: (event_error => unit, t) => unit
+let set_onerror: (eventError => unit, t) => unit
 
-let get_onerror: (t, event_error) => unit
+let get_onerror: (t, eventError) => unit
 
-let set_onload: (event_load => unit, t) => unit
+let set_onload: (eventLoad => unit, t) => unit
 
-let get_onload: (t, event_load) => unit
+let get_onload: (t, eventLoad) => unit
 
-let set_onloadstart: (event_loadstart => unit, t) => unit
+let set_onloadstart: (eventLoadstart => unit, t) => unit
 
-let get_onloadstart: (t, event_loadstart) => unit
+let get_onloadstart: (t, eventLoadstart) => unit
 
-let set_onprogress: (event_loadstart => unit, t) => unit
+let set_onprogress: (eventLoadstart => unit, t) => unit
 
-let get_onprogress: (t, event_loadstart) => unit
+let get_onprogress: (t, eventLoadstart) => unit
 
-let set_ontimeout: (event_timeout => unit, t) => unit
+let set_ontimeout: (eventTimeout => unit, t) => unit
 
-let get_ontimeout: (t, event_timeout) => unit
+let get_ontimeout: (t, eventTimeout) => unit
 
-let set_onloadend: (event_loadend => unit, t) => unit
+let set_onloadend: (eventLoadend => unit, t) => unit
 
-let get_onloadend: (t, event_loadend) => unit
+let get_onloadend: (t, eventLoadend) => unit

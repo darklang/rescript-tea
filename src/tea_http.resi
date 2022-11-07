@@ -1,10 +1,10 @@
-type response_status = {code: int, message: string}
+type responseStatus = {code: int, message: string}
 type requestBody = Web.XMLHttpRequest.body
 type bodyType = Web.XMLHttpRequest.responseType
 type responseBody = Web.XMLHttpRequest.responseBody
 type response = {
   url: string,
-  status: response_status,
+  status: responseStatus,
   headers: Belt.Map.String.t<string>,
   body: responseBody,
 }
@@ -24,10 +24,10 @@ type expect<'res> = Expect(bodyType, response => result<'res, string>)
 
 type requestEvents<'msg> = {
   onreadystatechange: option<
-    (ref<Vdom.applicationCallbacks<'msg>>, Web.XMLHttpRequest.event_readystatechange) => unit,
+    (ref<Vdom.applicationCallbacks<'msg>>, Web.XMLHttpRequest.eventReadystatechange) => unit,
   >,
   onprogress: option<
-    (ref<Vdom.applicationCallbacks<'msg>>, Web.XMLHttpRequest.event_progress) => unit,
+    (ref<Vdom.applicationCallbacks<'msg>>, Web.XMLHttpRequest.eventProgress) => unit,
   >,
 }
 

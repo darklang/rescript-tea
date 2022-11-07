@@ -26,21 +26,21 @@ let init = (defaultValue, lift) => {
   lift: lift,
 }
 
-let get_value = (id, model) =>
+let getValue = (id, model) =>
   if IntMap.mem(id, model.values) {
     IntMap.find(id, model.values)
   } else {
     model.defaultValue
   }
 
-let put_value = (id, value, model) => {
+let putValue = (id, value, model) => {
   ...model,
   values: IntMap.add(id, value, model.values),
 }
 
-let mutate_value = (id, op, model) => {
-  let value = get_value(id, model)
-  put_value(id, op(value), model)
+let mutateValue = (id, op, model) => {
+  let value = getValue(id, model)
+  putValue(id, op(value), model)
 }
 
 let remove_value = (id, model) => {
@@ -50,36 +50,36 @@ let remove_value = (id, model) => {
 
 let update = (model, x) =>
   switch x {
-  | Increment(id) => mutate_value(id, \"+"(1), model)
-  | Decrement(id) => mutate_value(id, i => i - 1, model)
-  | Reset(id) => put_value(id, 0, model)
-  | Set(id, v) => put_value(id, v, model)
+  | Increment(id) => mutateValue(id, \"+"(1), model)
+  | Decrement(id) => mutateValue(id, i => i - 1, model)
+  | Reset(id) => putValue(id, 0, model)
+  | Set(id, v) => putValue(id, v, model)
   | Shutdown(id) => remove_value(id, model)
   }
 
 let shutdown = (model, id) => Cmd.msg(model.lift(Shutdown(id)))
 
-let view_button = (title, msg) => button(list{onClick(msg)}, list{text(title)})
+let viewButton = (title, msg) => button(list{onClick(msg)}, list{text(title)})
 
 let view = (id, model) => {
   let lift = model.lift
-  let value = get_value(id, model)
+  let value = getValue(id, model)
   div(
     list{Tea.Html.Attributes.styles(list{("display", "inline-block"), ("vertical-align", "top")})},
     list{
       span(
         list{Tea.Html.Attributes.style("text-weight", "bold")},
-        list{text(string_of_int(value))},
+        list{text(Belt.Int.toString(value))},
       ),
       br(list{}),
-      view_button("Increment", lift(Increment(id))),
+      viewButton("Increment", lift(Increment(id))),
       br(list{}),
-      view_button("Decrement", lift(Decrement(id))),
+      viewButton("Decrement", lift(Decrement(id))),
       br(list{}),
-      view_button("Set to 42", lift(Set(id, 42))),
+      viewButton("Set to 42", lift(Set(id, 42))),
       br(list{}),
       if value != 0 {
-        view_button("Reset", lift(Reset(id)))
+        viewButton("Reset", lift(Reset(id)))
       } else {
         noNode
       },

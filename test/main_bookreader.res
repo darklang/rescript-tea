@@ -177,7 +177,7 @@ let view = model => {
           ),
         },
       ),
-      progressView(string_of_int(progressLoaded(model.progress))),
+      progressView(Belt.Int.toString(progressLoaded(model.progress))),
       bookTextView(model.bookContent),
       footerView,
     },

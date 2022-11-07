@@ -22,7 +22,10 @@ let view = model =>
   div(
     list{},
     list{
-      span(list{Tea_html.Attributes.style("text-weight", "bold")}, list{text(string_of_int(model))}),
+      span(
+        list{Tea_html.Attributes.style("text-weight", "bold")},
+        list{text(string_of_int(model))},
+      ),
       br(list{}),
       view_button("Increment", Increment),
       br(list{}),
