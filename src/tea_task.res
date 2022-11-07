@@ -157,35 +157,34 @@ let testing = () => {
     }
   let a1 = succeed(2) |> andThen(n => succeed(n + 2))
   let () = doTest(Ok(4), a1)
-  let a2 = succeed(2) |> andThen(n => succeed(string_of_int(n)))
-  let () = doTest(Ok(@reason.raw_literal("2") "2"), a2)
+  let a2 = succeed(2) |> andThen(n => succeed(Belt.Int.toString(n)))
+  let () = doTest(Ok("2"), a2)
   let m1 = map(sqrt, succeed(9.))
   let () = doTest(Ok(3.), m1)
   let m2 = map2(\"+", succeed(9), succeed(3))
   let () = doTest(Ok(12), m2)
-  let m3 = map(string_of_int, succeed(9))
-  let () = doTest(Ok(@reason.raw_literal("9") "9"), m3)
+  let m3 = map(Belt.Int.toString, succeed(9))
+  let () = doTest(Ok("9"), m3)
   let s0 = sequence(list{succeed(1), succeed(2)})
   let () = doTest(Ok(list{1, 2}), s0)
   let s1 = sequence(list{succeed(1), fail(2.7), r()})
   let () = doTest(Error(2.7), s1)
-  let e0 =
-    fail(@reason.raw_literal("file not found") "file not found") |> onError(_msg => succeed(42))
+  let e0 = fail("file not found") |> onError(_msg => succeed(42))
   let () = doTest(Ok(42), e0)
-  let e1 = fail(@reason.raw_literal("file not found") "file not found") |> onError(_msg => fail(42))
+  let e1 = fail("file not found") |> onError(_msg => fail(42))
   let () = doTest(Error(42), e1)
   let n0 = sequence(list{
-    mapError(string_of_int, fail(42)),
+    mapError(Belt.Int.toString, fail(42)),
     mapError(Js.Float.toString, fail(3.14)),
   })
-  let () = doTest(Error(@reason.raw_literal("42") "42"), n0)
+  let () = doTest(Error("42"), n0)
   let n1 = sequence(list{
-    mapError(string_of_int, succeed(1)),
+    mapError(Belt.Int.toString, succeed(1)),
     mapError(Js.Float.toString, fail(3.14)),
   })
-  let () = doTest(Error(@reason.raw_literal("3.14") "3.14"), n1)
+  let () = doTest(Error("3.14"), n1)
   let n2 = sequence(list{
-    mapError(string_of_int, succeed(1)),
+    mapError(Belt.Int.toString, succeed(1)),
     mapError(Js.Float.toString, succeed(2)),
   })
   let () = doTest(Ok(list{1, 2}), n2)

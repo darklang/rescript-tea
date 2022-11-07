@@ -31,9 +31,9 @@ let update = (model, x) =>
 let subscriptions = _model => Sub.none
 
 let view = model => {
-  let r = string_of_int(model.r)
-  let g = string_of_int(model.g)
-  let b = string_of_int(model.b)
+  let r = Belt.Int.toString(model.r)
+  let g = Belt.Int.toString(model.g)
+  let b = Belt.Int.toString(model.b)
   let isDark = (model.r + model.g + model.b) / 3 > 128
   let rgb = "(" ++ (r ++ ("," ++ (g ++ ("," ++ (b ++ ")")))))
   let altRgb = if isDark {
@@ -46,7 +46,10 @@ let view = model => {
     list{},
     list{
       h1(
-        list{Tea_html.Attributes.style("background-color", "rgb" ++ rgb), Tea_html.Attributes.style("color", "rgb" ++ altRgb)},
+        list{
+          Tea_html.Attributes.style("background-color", "rgb" ++ rgb),
+          Tea_html.Attributes.style("color", "rgb" ++ altRgb),
+        },
         list{text(rgb)},
       ),
       button(list{onClick(Roll)}, list{text("Roll")}),

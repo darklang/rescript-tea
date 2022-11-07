@@ -63,7 +63,7 @@ let subscriptions = model =>
   | Some(_) => Sub.batch(list{Mouse.moves(dragAt), Mouse.ups(dragEnd)})
   }
 
-let px = number => string_of_int(number) ++ "px"
+let px = number => Belt.Int.toString(number) ++ "px"
 
 let onMouseDown = onCB("mousedown", ~key="", ev =>
   Json.Decoder.decodeEvent(Json.Decoder.map(dragStart, Mouse.position), ev)->Result.resultToOption

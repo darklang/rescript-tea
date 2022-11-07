@@ -65,16 +65,16 @@ let programStateWrapper = (initModel, pump, shutdown) => {
       }
     | Some(msgs) => pending := Some(list{msg, ...msgs})
     }
-  let render_events = ref(list{})
+  let renderEvents = ref(list{})
   let finalizedCBs: Vdom.applicationCallbacks<'msg> = (
     {
       enqueue: msg => handler(msg),
       on: x =>
         switch x {
-        | Render => List.iter(handler, render_events.contents)
-        | AddRenderMsg(msg) => render_events := List.append(render_events.contents, list{msg})
+        | Render => List.iter(handler, renderEvents.contents)
+        | AddRenderMsg(msg) => renderEvents := List.append(renderEvents.contents, list{msg})
         | RemoveRenderMsg(msg) =>
-          render_events := List.filter(mg => msg !== mg, render_events.contents)
+          renderEvents := List.filter(mg => msg !== mg, renderEvents.contents)
         },
     }: Vdom.applicationCallbacks<'msg>
   )

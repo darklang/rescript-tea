@@ -2,21 +2,21 @@ type unresolved
 
 type xmlHttpRequestUpload
 
-type event_readystatechange = Js.Json.t
-type event_abort = Js.Json.t
-type event_error = Js.Json.t
-type event_load = Js.Json.t
-type event_loadstart = Js.Json.t
-type event_progress = Js.Json.t
-type event_timeout = Js.Json.t
-type event_loadend = Js.Json.t
+type eventReadystatechange = Js.Json.t
+type eventAbort = Js.Json.t
+type eventError = Js.Json.t
+type eventLoad = Js.Json.t
+type eventLoadstart = Js.Json.t
+type eventProgress = Js.Json.t
+type eventTimeout = Js.Json.t
+type eventLoadend = Js.Json.t
 
 @obj
 type _xmlhttprequest = {
   // Properties
 
   @get @set
-  "onreadystatechange": event_readystatechange => unit,
+  "onreadystatechange": eventReadystatechange => unit,
   @get
   "readyState": int,
   @get @set
@@ -41,19 +41,19 @@ type _xmlhttprequest = {
   // Base events
 
   @get @set
-  "onabort": event_abort => unit,
+  "onabort": eventAbort => unit,
   @get @set
-  "onerror": event_error => unit,
+  "onerror": eventError => unit,
   @get @set
-  "onload": event_load => unit,
+  "onload": eventLoad => unit,
   @get @set
-  "onloadstart": event_loadstart => unit,
+  "onloadstart": eventLoadstart => unit,
   @get @set
-  "onprogress": event_progress => unit,
+  "onprogress": eventProgress => unit,
   @get @set
-  "ontimeout": event_timeout => unit,
+  "ontimeout": eventTimeout => unit,
   @get @set
-  "onloadend": event_loadend => unit,
+  "onloadend": eventLoadend => unit,
 }
 
 type t = _xmlhttprequest
@@ -64,9 +64,9 @@ type t = _xmlhttprequest
 @send external open': (t, string, string, bool, string, string) => unit = "open"
 @send external overrideMimeType: (t, string) => unit = "overrideMimeType"
 @send external send: t => unit = "send"
-@send external send__string: (t, Js.null<string>) => unit = "send"
-@send external send__formdata: (t, Webapi.FormData.t) => unit = "send"
-@send external send__document: (t, Dom.document) => unit = "send"
+@send external sendString: (t, Js.null<string>) => unit = "send"
+@send external sendFormData: (t, Webapi.FormData.t) => unit = "send"
+@send external sendDocument: (t, Dom.document) => unit = "send"
 // send__arrayBuffer: arrayBuffer => unit,
 // send__blob: blob => unit,
 @send external setRequestHeader: (t, string, string) => unit = "setRequestHeader"
@@ -135,16 +135,16 @@ let overrideMimeType = (mimetype: string, x: t): unit => overrideMimeType(x, mim
 let send = (body: body, x: t): unit =>
   switch body {
   | EmptyBody => x->send
-  | EmptyStringBody => x->send__string(Js.Null.empty)
-  | StringBody(s) => x->send__string(Js.Null.return(s))
-  | FormDataBody(f) => x->send__formdata(f)
+  | EmptyStringBody => x->sendString(Js.Null.empty)
+  | StringBody(s) => x->sendString(Js.Null.return(s))
+  | FormDataBody(f) => x->sendFormData(f)
   | FormListBody(l) =>
     let form = List.fold_left((f, (key, value)) => {
       let () = Webapi.FormData.append(f, key, value)
       f
     }, Webapi.FormData.make(), l)
-    x->send__formdata(form)
-  | DocumentBody(d) => x->send__document(d)
+    x->sendFormData(form)
+  | DocumentBody(d) => x->sendDocument(d)
   }
 /* | BlobBody b -> x##send_blob b */
 /* | ArrayBufferViewBody a -> x##send_arrayBufferView a */
@@ -179,10 +179,10 @@ type responseBody =
   | TextResponse(string)
   | RawResponse(string, unit)
 
-let set_onreadystatechange = (cb: event_readystatechange => unit, x: t): unit =>
+let set_onreadystatechange = (cb: eventReadystatechange => unit, x: t): unit =>
   x["onreadystatechange"] = cb
 
-let get_onreadystatechange = (x: t): (event_readystatechange => unit) => x["onreadystatechange"]
+let get_onreadystatechange = (x: t): (eventReadystatechange => unit) => x["onreadystatechange"]
 
 let readyState = (x: t): state =>
   switch x["readyState"] {
@@ -191,7 +191,7 @@ let readyState = (x: t): state =>
   | 2 => HeadersReceived
   | 3 => Loading
   | 4 => Done
-  | i => failwith("Invalid return from 'readystate' of: " ++ string_of_int(i))
+  | i => failwith("Invalid return from 'readystate' of: " ++ Belt.Int.toString(i))
   }
 
 let set_responseType = (typ: responseType, x: t): unit =>
@@ -249,30 +249,30 @@ let set_withCredentials = (b: bool, x: t): unit => x["withCredentials"] = b
 
 let get_withCredentials = (x: t): bool => x["withCredentials"]
 
-let set_onabort = (cb: event_abort => unit, x: t): unit => x["onabort"] = cb
+let set_onabort = (cb: eventAbort => unit, x: t): unit => x["onabort"] = cb
 
-let get_onabort = (x: t): (event_abort => unit) => x["onabort"]
+let get_onabort = (x: t): (eventAbort => unit) => x["onabort"]
 
-let set_onerror = (cb: event_error => unit, x: t): unit => x["onerror"] = cb
+let set_onerror = (cb: eventError => unit, x: t): unit => x["onerror"] = cb
 
-let get_onerror = (x: t): (event_error => unit) => x["onerror"]
+let get_onerror = (x: t): (eventError => unit) => x["onerror"]
 
-let set_onload = (cb: event_load => unit, x: t): unit => x["onload"] = cb
+let set_onload = (cb: eventLoad => unit, x: t): unit => x["onload"] = cb
 
-let get_onload = (x: t): (event_load => unit) => x["onload"]
+let get_onload = (x: t): (eventLoad => unit) => x["onload"]
 
-let set_onloadstart = (cb: event_loadstart => unit, x: t): unit => x["onloadstart"] = cb
+let set_onloadstart = (cb: eventLoadstart => unit, x: t): unit => x["onloadstart"] = cb
 
-let get_onloadstart = (x: t): (event_loadstart => unit) => x["onloadstart"]
+let get_onloadstart = (x: t): (eventLoadstart => unit) => x["onloadstart"]
 
-let set_onprogress = (cb: event_loadstart => unit, x: t): unit => x["onprogress"] = cb
+let set_onprogress = (cb: eventLoadstart => unit, x: t): unit => x["onprogress"] = cb
 
-let get_onprogress = (x: t): (event_loadstart => unit) => x["onprogress"]
+let get_onprogress = (x: t): (eventLoadstart => unit) => x["onprogress"]
 
-let set_ontimeout = (cb: event_timeout => unit, x: t): unit => x["ontimeout"] = cb
+let set_ontimeout = (cb: eventTimeout => unit, x: t): unit => x["ontimeout"] = cb
 
-let get_ontimeout = (x: t): (event_timeout => unit) => x["ontimeout"]
+let get_ontimeout = (x: t): (eventTimeout => unit) => x["ontimeout"]
 
-let set_onloadend = (cb: event_loadend => unit, x: t): unit => x["onloadend"] = cb
+let set_onloadend = (cb: eventLoadend => unit, x: t): unit => x["onloadend"] = cb
 
-let get_onloadend = (x: t): (event_loadend => unit) => x["onloadend"]
+let get_onloadend = (x: t): (eventLoadend => unit) => x["onloadend"]

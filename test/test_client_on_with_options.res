@@ -22,7 +22,7 @@ let view = model => {
     List.map(
       e => div(list{}, list{e}),
       list{
-        model |> string_of_int |> text,
+        model->Belt.Int.toString->text,
         button(list{onClick(Click)}, list{text("onClick")}),
         button(list{on(~key="", "click", Decoder.succeed(Click))}, list{text("on \"click\"")}),
         a(list{href("https://www.google.com")}, list{text("a normal link")}),

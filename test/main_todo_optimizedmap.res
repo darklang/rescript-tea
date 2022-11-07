@@ -103,7 +103,7 @@ let update = (model, x) =>
         /* entries = Array.map updateEntry model.entries */
       },
       if editing {
-        Cmds.focus("todo-" ++ string_of_int(id))
+        Cmds.focus("todo-" ++ Belt.Int.toString(id))
       } else {
         Cmd.none
       },
@@ -188,7 +188,7 @@ let onEnter = (~key="", msg) => {
 }
 
 let viewEntry = (todo, ()) => {
-  let key = string_of_int(todo.id)
+  let key = Belt.Int.toString(todo.id)
   let fullkey = key ++ (string_of_bool(todo.completed) ++ string_of_bool(todo.editing))
   /* Optimized:  Added a key to the node to early-out if exact match, if key is unspecified then the sub section is
    always recursed into, thus this is *not* like elm's keyed nodes but rather more strict. */
@@ -217,7 +217,7 @@ let viewEntry = (todo, ()) => {
           Html.Attributes.class("edit"),
           Html.Attributes.value(todo.description),
           Html.Attributes.name("title"),
-          Html.Attributes.id("todo-" ++ string_of_int(todo.id)),
+          Html.Attributes.id("todo-" ++ Belt.Int.toString(todo.id)),
           onInput(~key, value => UpdateEntry(todo.id, value)),
           onBlur(EditingEntry(todo.id, false)),
           onEnter(~key, EditingEntry(todo.id, false)),
@@ -260,7 +260,7 @@ let viewEntries = (visibility, entries) => {
         IntMap.bindings(entries) |> List.map(((_id, todo)) =>
           if isVisible(todo) {
             lazy1(
-              string_of_int(todo.id) ++
+              Belt.Int.toString(todo.id) ++
               (string_of_bool(todo.completed) ++
               string_of_bool(todo.editing)),
               viewEntry(todo),
@@ -301,7 +301,7 @@ let viewControlsCount = entriesLeft => {
   } else {
     " items"
   }
-  let left = string_of_int(entriesLeft)
+  let left = Belt.Int.toString(entriesLeft)
   span(
     ~key=left,
     list{Html.Attributes.class("todo-count")},
@@ -342,7 +342,7 @@ let viewControlsClear = entriesCompleted =>
       Html.Attributes.hidden(entriesCompleted === 0),
       onClick(DeleteComplete),
     },
-    list{text("Clear completed (" ++ (string_of_int(entriesCompleted) ++ ")"))},
+    list{text("Clear completed (" ++ (Belt.Int.toString(entriesCompleted) ++ ")"))},
   )
 
 let viewControls = (visibility, entries) => {
