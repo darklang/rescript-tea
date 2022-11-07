@@ -15,9 +15,13 @@ type error<'parsedata> =
   | Aborted
   | BadStatus(response)
   | BadPayload('parsedata, response)
-let string_of_error: error<'a> => string
+
+let stringOfError: error<'msg> => string
+
 type header = Header(string, string)
+
 type expect<'res> = Expect(bodyType, response => result<'res, string>)
+
 type requestEvents<'msg> = {
   onreadystatechange: option<
     (ref<Vdom.applicationCallbacks<'msg>>, Web.XMLHttpRequest.event_readystatechange) => unit,
@@ -26,7 +30,9 @@ type requestEvents<'msg> = {
     (ref<Vdom.applicationCallbacks<'msg>>, Web.XMLHttpRequest.event_progress) => unit,
   >,
 }
+
 let emptyRequestEvents: requestEvents<'a>
+
 type rawRequest<'res> = {
   method: string,
   headers: list<header>,

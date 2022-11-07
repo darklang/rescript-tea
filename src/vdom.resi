@@ -70,24 +70,24 @@ let emptyEventCB: 'msg => option<eventCallback>
 
 let eventHandler: (ref<applicationCallbacks<'msg>>, ref<Dom.event => option<'msg>>) => eventCallback
 
-let eventHandler_GetCB: (eventHandler<'msg>, Dom.event) => option<'msg>
+let eventHandlerGetCB: (eventHandler<'msg>, Dom.event) => option<'msg>
 
 let compareEventHandlerTypes: (eventHandler<'msg>, eventHandler<'msg>) => bool
 
-let eventHandler_Register: (
+let eventHandlerRegister: (
   ref<applicationCallbacks<'msg>>,
   Dom.eventTarget,
   string,
   eventHandler<'msg>,
 ) => option<eventCache<'msg>>
 
-let eventHandler_Unregister: (
+let eventHandlerUnregister: (
   Dom.eventTarget,
   string,
   option<eventCache<'msg>>,
 ) => option<eventCache<'msg>>
 
-let eventHandler_Mutate: (
+let eventHandlerMutate: (
   ref<applicationCallbacks<'msg>>,
   Dom.eventTarget,
   string,
@@ -98,29 +98,21 @@ let eventHandler_Mutate: (
   ref<option<eventCache<'msg>>>,
 ) => unit
 
-let patchVNodesOnElems_PropertiesApply_Add: (
+let patchVNodesOnElemsPropertiesApplyAdd: (
   ref<applicationCallbacks<'msg>>,
   Dom.element,
   int,
   property<'msg>,
 ) => unit
 
-let patchVNodesOnElems_PropertiesApply_Remove: (
+let patchVNodesOnElemsPropertiesApplyRemove: (
   ref<applicationCallbacks<'msg>>,
   Dom.element,
   int,
   property<'msg>,
 ) => unit
 
-let patchVNodesOnElems_PropertiesApply_RemoveAdd: (
-  ref<applicationCallbacks<'msg>>,
-  Dom.element,
-  int,
-  property<'msg>,
-  property<'msg>,
-) => unit
-
-let patchVNodesOnElems_PropertiesApply_Mutate: (
+let patchVNodesOnElemsPropertiesApplyRemoveAdd: (
   ref<applicationCallbacks<'msg>>,
   Dom.element,
   int,
@@ -128,7 +120,15 @@ let patchVNodesOnElems_PropertiesApply_Mutate: (
   property<'msg>,
 ) => unit
 
-let patchVNodesOnElems_PropertiesApply: (
+let patchVNodesOnElemsPropertiesApplyMutate: (
+  ref<applicationCallbacks<'msg>>,
+  Dom.element,
+  int,
+  property<'msg>,
+  property<'msg>,
+) => unit
+
+let patchVNodesOnElemsPropertiesApply: (
   ref<applicationCallbacks<'msg>>,
   Dom.element,
   int,
@@ -136,7 +136,7 @@ let patchVNodesOnElems_PropertiesApply: (
   list<property<'msg>>,
 ) => bool
 
-let patchVNodesOnElems_Properties: (
+let patchVNodesOnElemsProperties: (
   ref<applicationCallbacks<'msg>>,
   Dom.element,
   list<property<'msg>>,
@@ -147,7 +147,7 @@ let genEmptyProps: int => list<property<'msg>>
 
 let mapEmptyProps: list<property<'msg>> => list<property<'msg>>
 
-let patchVNodesOnElems_ReplaceNode: (
+let patchVNodesOnElemsReplaceNode: (
   ref<applicationCallbacks<'msg>>,
   Dom.node,
   Dom.nodeList,
@@ -155,9 +155,9 @@ let patchVNodesOnElems_ReplaceNode: (
   t<'msg>,
 ) => unit
 
-let patchVNodesOnElems_CreateElement: (ref<applicationCallbacks<'msg>>, t<'msg>) => Dom.node
+let patchVNodesOnElemsCreateElement: (ref<applicationCallbacks<'msg>>, t<'msg>) => Dom.node
 
-let patchVNodesOnElems_MutateNode: (
+let patchVNodesOnElemsMutateNode: (
   ref<applicationCallbacks<'msg>>,
   Dom.node,
   Dom.nodeList,
@@ -189,7 +189,7 @@ let patchVNodeIntoElement: (
   t<'msg>,
 ) => list<t<'msg>>
 
-let wrapCallbacks_On: ('msg => 'b, systemMessage<'msg>) => systemMessage<'b>
+let wrapCallbacksOn: ('msg => 'b, systemMessage<'msg>) => systemMessage<'b>
 
 let wrapCallbacks: ('msg => 'b, ref<applicationCallbacks<'b>>) => ref<applicationCallbacks<'msg>>
 

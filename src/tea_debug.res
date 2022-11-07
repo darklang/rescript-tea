@@ -3,7 +3,7 @@ type debug_msg<'msg> =
   | TogglePaused
   | SelectHistoryItem(int)
   | ToggleDetails
-let client_msg = msg => ClientMsg(msg)
+let clientMsg = msg => ClientMsg(msg)
 
 type state =
   | Running
@@ -28,13 +28,13 @@ let debug = (
   debug_model<'model> => Tea_sub.t<debug_msg<'msg>>,
   debug_model<'model> => Tea_cmd.t<debug_msg<'msg>>,
 ) => {
-  let init_debug = ((cmodel, cmd)) => (
+  let initDebug = ((cmodel, cmd)) => (
     {
       history: list{("_init_", cmodel)},
       state: Running,
       show_details: false,
     },
-    cmd |> Tea_cmd.map(client_msg),
+    cmd |> Tea_cmd.map(clientMsg),
   )
 
   let update' = (model, x) =>
@@ -44,7 +44,7 @@ let debug = (
         let (_, cmodel) = List.hd(model.history)
         let (cmodel', cmd) = update(cmodel, msg)
         let dmodel' = {...model, history: list{(string_of_msg(msg), cmodel'), ...model.history}}
-        (dmodel', cmd |> Tea_cmd.map(client_msg))
+        (dmodel', cmd |> Tea_cmd.map(clientMsg))
       } else {
         (model, Tea_cmd.none)
       }
@@ -57,7 +57,7 @@ let debug = (
     | ToggleDetails => ({...model, show_details: !model.show_details}, Tea_cmd.none)
     }
 
-  let view_styles = () => {
+  let viewStyles = () => {
     open Tea_html
     let rule = (selector, properties) =>
       properties
@@ -206,7 +206,7 @@ let debug = (
     )
   }
 
-  let view_details = model => {
+  let viewDetails = model => {
     open Tea_html
     module A = Tea_html.Attributes
     let format = %raw(`
@@ -267,7 +267,7 @@ let debug = (
     aside(list{A.class("details")}, list{model |> format |> text})
   }
 
-  let view_history = (model, selected_index) => {
+  let viewHistory = (model, selected_index) => {
     open Tea_html
     module A = Tea_html.Attributes
     module E = Tea_html.Events
@@ -291,7 +291,7 @@ let debug = (
               },
               list{
                 if selected && model.show_details {
-                  view_details(cmodel)
+                  viewDetails(cmodel)
                 } else {
                   noNode
                 },
@@ -317,11 +317,11 @@ let debug = (
     div(
       list{},
       list{
-        view(selected_model) |> Tea_app.map(client_msg),
+        view(selected_model) |> Tea_app.map(clientMsg),
         div(
           list{A.id("debug"), A.classList(list{("paused", paused)})},
           list{
-            view_styles(),
+            viewStyles(),
             nav(
               list{},
               list{
@@ -338,7 +338,7 @@ let debug = (
                   list{j`Explore History ($(history_count))` |> text},
                 ),
                 if paused {
-                  view_history(model, selected_index)
+                  viewHistory(model, selected_index)
                 } else {
                   noNode
                 },
@@ -351,21 +351,21 @@ let debug = (
   }
 
   let subscriptions' = model =>
-    model.history |> List.hd |> snd |> subscriptions |> Tea_sub.map(client_msg)
+    model.history |> List.hd |> snd |> subscriptions |> Tea_sub.map(clientMsg)
 
-  let shutdown' = model => model.history |> List.hd |> snd |> shutdown |> Tea_cmd.map(client_msg)
+  let shutdown' = model => model.history |> List.hd |> snd |> shutdown |> Tea_cmd.map(clientMsg)
 
-  (init_debug, update', view', subscriptions', shutdown')
+  (initDebug, update', view', subscriptions', shutdown')
 }
 
-let debug_program: (
+let debugProgram: (
   'msg => string,
   Tea_app.program<'flags, 'model, 'msg>,
 ) => Tea_app.program<'flags, debug_model<'model>, debug_msg<'msg>> = (
   string_of_msg,
   {init, update, view, subscriptions, shutdown},
 ) => {
-  let (init_debug, update', view', subscriptions', shutdown') = debug(
+  let (initDebug, update', view', subscriptions', shutdown') = debug(
     string_of_msg,
     update,
     view,
@@ -374,7 +374,7 @@ let debug_program: (
   )
 
   {
-    init: flags => init(flags) |> init_debug,
+    init: flags => init(flags) |> initDebug,
     update: update',
     view: view',
     subscriptions: subscriptions',
@@ -382,14 +382,14 @@ let debug_program: (
   }
 }
 
-let debug_navigation_program: (
+let debugNavigationProgram: (
   'msg => string,
   Tea_navigation.navigationProgram<'flags, 'model, 'msg>,
 ) => Tea_navigation.navigationProgram<'flags, debug_model<'model>, debug_msg<'msg>> = (
   string_of_msg,
   {init, update, view, subscriptions, shutdown},
 ) => {
-  let (init_debug, update', view', subscriptions', shutdown') = debug(
+  let (initDebug, update', view', subscriptions', shutdown') = debug(
     string_of_msg,
     update,
     view,
@@ -398,7 +398,7 @@ let debug_navigation_program: (
   )
 
   {
-    init: (flags, location) => init(flags, location) |> init_debug,
+    init: (flags, location) => init(flags, location) |> initDebug,
     update: update',
     view: view',
     subscriptions: subscriptions',
@@ -417,7 +417,7 @@ let beginnerProgram: (
   pnode,
   flags,
 ) => {
-  let debugged = debug_program(
+  let debugged = debugProgram(
     string_of_msg,
     {
       init: () => (model, Tea_cmd.none),
@@ -441,7 +441,7 @@ let standardProgram: (
   pnode,
   flags,
 ) => {
-  let debugged = debug_program(
+  let debugged = debugProgram(
     string_of_msg,
     {
       init: init,
@@ -465,7 +465,7 @@ let program: (
   pnode,
   flags,
 ) => {
-  let debugged = debug_program(
+  let debugged = debugProgram(
     string_of_msg,
     {
       init: init,
@@ -491,9 +491,9 @@ let navigationProgram: (
   pnode,
   flags,
 ) => {
-  let location = location => location |> location_to_msg |> client_msg
+  let location = location => location |> location_to_msg |> clientMsg
 
-  let debugged = debug_navigation_program(
+  let debugged = debugNavigationProgram(
     string_of_msg,
     {
       init: init,
