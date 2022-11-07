@@ -908,6 +908,12 @@ module Attributes: {
   let pubdate: string => Vdom.property<'msg>
 
   let manifest: string => Vdom.property<'msg>
+
+  let role: string => Vdom.property<'msg>
+
+  let ariaChecked: bool => Vdom.property<'msg>
+
+  let ariaHidden: bool => Vdom.property<'msg>
 }
 module Events: {
   type options = {stopPropagation: bool, preventDefault: bool}
