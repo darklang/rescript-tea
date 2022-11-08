@@ -100,6 +100,10 @@ let createElementNsOptional = (namespace, tagName) => {
 let nodeAt = (index: int, nodes: Dom.nodeList): Dom.node =>
   Webapi.Dom.NodeList.item(nodes, index) |> Belt.Option.getExn
 
+@set_index external setItem: (Dom.element, 'key, 'value) => unit = ""
+@get_index external _getItem: (Dom.element, 'key) => 'value = ""
+let delItem = (elem: Dom.element, key: 'key) => setItem(elem, key, Js.Undefined.empty)
+
 let rec renderToHtmlString: t<'msg> => string = (
   x =>
     switch x {
@@ -244,7 +248,7 @@ let patchVNodesOnElemsPropertiesApplyAdd = (
 ) =>
   switch x {
   | NoProp => ()
-  | RawProp(k, v) => Vdom2.setItem(elem, k, v)
+  | RawProp(k, v) => setItem(elem, k, v)
   | Attribute(namespace, k, v) => Webapi.Dom.Element.setAttributeNS(elem, namespace, k, v)
   | Data(k, v) =>
     Js.log(("TODO:  Add Data Unhandled", k, v))
@@ -273,7 +277,7 @@ let patchVNodesOnElemsPropertiesApplyRemove = (
 ) =>
   switch x {
   | NoProp => ()
-  | RawProp(k, _v) => Vdom2.delItem(elem, k)
+  | RawProp(k, _v) => delItem(elem, k)
   | Attribute(namespace, k, _v) => Webapi.Dom.Element.removeAttributeNS(elem, namespace, k)
   | Data(k, v) =>
     Js.log(("TODO:  Remove Data Unhandled", k, v))
@@ -314,7 +318,7 @@ let patchVNodesOnElemsPropertiesApplyMutate = (
 ) =>
   switch x {
   | NoProp => failwith("This should never be called as all entries through NoProp are gated.")
-  | RawProp(k, v) => Vdom2.setItem(elem, k, v)
+  | RawProp(k, v) => setItem(elem, k, v)
   | Attribute(namespace, k, v) => Webapi.Dom.Element.setAttributeNS(elem, namespace, k, v)
   | Data(k, v) =>
     Js.log(("TODO:  Mutate Data Unhandled", k, v))
@@ -458,7 +462,7 @@ let rec patchVNodesOnElemsReplaceNode = (
       let newChildNode = Webapi.Dom.Element.asNode(newChild)
       let childChildren = Webapi.Dom.Node.childNodes(newChildNode)
       let () = patchVNodesOnElems(callbacks, newChildNode, childChildren, 0, list{}, newChildren)
-      let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChildNode, ~before=oldChild)
+      let _attachedChild = Webapi.Dom.Node.insertBefore(elem, ~new=newChildNode, ~before=oldChild)
       let _removedChild = Webapi.Dom.Node.removeChild(elem, ~child=oldChild)
     | _ => failwith("Node replacement should never be passed anything but a node itself")
     }
@@ -588,7 +592,11 @@ and patchVNodesOnElems = (
         let firstChild = nodeAt(idx, elems)
         let secondChild = nodeAt(idx + 1, elems)
         let _removedChild = Webapi.Dom.Node.removeChild(elem, ~child=secondChild)
-        let _attachedChild = Vdom2.insertBefore(elem, ~new_=secondChild, ~before=firstChild)
+        let _attachedChild = Webapi.Dom.Node.insertBefore(
+          elem,
+          ~new=secondChild,
+          ~before=firstChild,
+        )
         patchVNodesOnElems(callbacks, elem, elems, idx + 2, olderRest, newerRest)
       | (list{LazyGen(olderKey, _olderGen, olderCache), ...olderRest}, _) if olderKey == newKey =>
         let oldChild = nodeAt(idx, elems)
@@ -601,7 +609,7 @@ and patchVNodesOnElems = (
         let newVdom = newGen()
         let () = newCache := newVdom
         let newChild = patchVNodesOnElemsCreateElement(callbacks, newVdom)
-        let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChild, ~before=oldChild)
+        let _attachedChild = Webapi.Dom.Node.insertBefore(elem, ~new=newChild, ~before=oldChild)
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldVNodes, newRest)
       | _ =>
         let oldVdom = oldCache.contents
@@ -666,7 +674,11 @@ and patchVNodesOnElems = (
         let firstChild = nodeAt(idx, elems)
         let secondChild = nodeAt(idx + 1, elems)
         let _removedChild = Webapi.Dom.Node.removeChild(elem, ~child=secondChild)
-        let _attachedChild = Vdom2.insertBefore(elem, ~new_=secondChild, ~before=firstChild)
+        let _attachedChild = Webapi.Dom.Node.insertBefore(
+          elem,
+          ~new=secondChild,
+          ~before=firstChild,
+        )
         patchVNodesOnElems(callbacks, elem, elems, idx + 2, olderRest, newerRest)
       | (
           list{
@@ -701,7 +713,7 @@ and patchVNodesOnElems = (
         ) if oldNamespace == newerNamespace && (oldTagName == newerTagName && oldKey == newerKey) =>
         let oldChild = nodeAt(idx, elems)
         let newChild = patchVNodesOnElemsCreateElement(callbacks, newNode)
-        let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChild, ~before=oldChild)
+        let _attachedChild = Webapi.Dom.Node.insertBefore(elem, ~new=newChild, ~before=oldChild)
         patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldVNodes, newRest)
       | _ =>
         let () = patchVNodesOnElemsMutateNode(callbacks, elem, elems, idx, oldNode, newNode)
@@ -711,7 +723,7 @@ and patchVNodesOnElems = (
   | (list{_oldVnode, ...oldRest}, list{newNode, ...newRest}) =>
     let oldChild = nodeAt(idx, elems)
     let newChild = patchVNodesOnElemsCreateElement(callbacks, newNode)
-    let _attachedChild = Vdom2.insertBefore(elem, ~new_=newChild, ~before=oldChild)
+    let _attachedChild = Webapi.Dom.Node.insertBefore(elem, ~new=newChild, ~before=oldChild)
     let _removedChild = Webapi.Dom.Node.removeChild(elem, ~child=oldChild)
     patchVNodesOnElems(callbacks, elem, elems, idx + 1, oldRest, newRest)
   }
