@@ -5,3 +5,4 @@
 .circleci
 /doc
 npm-debug.log
+.merlin
