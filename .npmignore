@@ -1,4 +1,7 @@
 /node_modules
 /lib/bs
-/lib/js/test
+/lib/js
+/test
+.circleci
+/doc
 npm-debug.log
