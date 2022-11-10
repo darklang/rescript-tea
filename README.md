@@ -144,11 +144,17 @@ For a large-scale example, see the [Darklang client/editor](https://github.com/d
 
 ## Starter-Kits
 
-*These starter kits are out of date - see [#46](https://github.com/darklang/rescript-tea/issues/46) for more details.*
-
 A list of starter-kits that get you up and running.
 
 > Feel free to extend this list!
+
+#### [celsobonutti/vite-template-rescript-tea](https://github.com/celsobonutti/vite-template-rescript-tea)
+
+* syntax: ReScript
+* build-system: [rollup](https://github.com/rollup/rollup)
+* dev-server: [vite](https://github.com/vitejs/vite)
+
+### Outdated started kits
 
 #### [tcoopman/bucklescript-tea-starter-kit](https://github.com/tcoopman/bucklescript-tea-starter-kit)
 
