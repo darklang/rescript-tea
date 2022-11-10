@@ -91,22 +91,22 @@ let update = (model: model, msg: msg) : model =>
   }
 
 // This is just a helper function for the view, a simple function that returns a button based on some argument
-let viewButton = (title: string, msg: msg) =
-  button(list{onClick(msg)}, list{text(title)})
+let viewButton = (title: string, msg: msg) =>
+  button(list{Events.onClick(msg)}, list{text(title)})
 
 // This is the main callback to generate the virtual-dom.
 // This returns a virtual-dom node that becomes the view, only changes from call-to-call are set on the real DOM for efficiency, this is also only called once per frame even with many messages sent in within that frame, otherwise does nothing
-let view = (model: model) : Vdom.node<msg> =>
+let view = (model: model):Vdom.t<msg> =>
   div(
     list{},
     list{
-      span(list{style("text-weight", "bold")}, list{text(string_of_int(model))}),
+      span(list{Attributes.style("text-weight", "bold")}, list{text(string_of_int(model))}),
       br(list{}),
       viewButton("Increment", Increment),
       br(list{}),
       viewButton("Decrement", Decrement),
       br(list{}),
-      viewButton("Set to 42", (Set 42)),
+      viewButton("Set to 42", Set(42)),
       br(list{}),
       model != 42 ? viewButton("Reset", Reset) : noNode
     })
@@ -118,8 +118,7 @@ let view = (model: model) : Vdom.node<msg> =>
 // constructors to the messages to javascript via the above [@@bs.deriving
 // {accessors}] attribute on the `msg` type or manually, that way even javascript can
 // use it safely.
-let main =
-  beginnerProgram({
+let main = beginnerProgram({
     model: init (),
     update: update,
     view: view
