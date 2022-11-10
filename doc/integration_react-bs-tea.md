@@ -1,5 +1,7 @@
 ## ReasonReact Integration Example
 
+*This doc is out of date. Contributions that help bring it up to date are welcome!*
+
 This example describes how to integrate the Bucklescript TEA framework into a ReasonReact component. This is useful if you want to migrate an existing ReasonReact project to use Bucklescript TEA, or simply use it for a single component. You'll soon learn to love "The Elm Architecture" way of designing frontend components and their logic.
 
 See issue https://github.com/OvermindDL1/bucklescript-tea/issues/121 for the beginning of this discussion. The resulting code can be seen below.
