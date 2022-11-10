@@ -141,7 +141,11 @@ For further examples see the [test
 directory](https://github.com/darklang/rescript-tea/tree/main/test), which has many
 examples.
 
+For a large-scale example, see the [Darklang client/editor](https://github.com/darklang/dark/tree/main/client).
+
 ## Starter-Kits
+
+*These starter kits are out of date - see [#46](https://github.com/darklang/rescript-tea/issues/46) for more details.*
 
 A list of starter-kits that get you up and running.
 
@@ -162,7 +166,7 @@ A list of starter-kits that get you up and running.
 
 #### [darklang/philip2](https://github.com/darklang/philip2)
 
-This one is not so much a starter kit as it is a porting kit, it can actually take in elm files, parse them, and output rescript-tea OCaml code (which can be converted to Rescript via `rescript convert`) with only minor'ish tweaks there-after needed to get it working.
+This one is not so much a starter kit as it is a porting kit, it can actually take in Elm files, parse them, and output Rescript-tea code (though in OCaml, which can be converted to Rescript via `rescript convert`) with only minor'ish tweaks there-after needed to get it working.
 
 See its announcement article at: https://medium.com/@paulbiggar/philip2-an-elm-to-reasonml-compiler-a210aaa6cd04
 
