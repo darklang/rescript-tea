@@ -150,7 +150,6 @@ A list of starter-kits that get you up and running.
 
 #### [celsobonutti/vite-template-rescript-tea](https://github.com/celsobonutti/vite-template-rescript-tea)
 
-* syntax: ReScript
 * build-system: [rollup](https://github.com/rollup/rollup)
 * dev-server: [vite](https://github.com/vitejs/vite)
 
