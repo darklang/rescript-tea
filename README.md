@@ -96,7 +96,7 @@ let viewButton = (title: string, msg: msg) =>
 
 // This is the main callback to generate the virtual-dom.
 // This returns a virtual-dom node that becomes the view, only changes from call-to-call are set on the real DOM for efficiency, this is also only called once per frame even with many messages sent in within that frame, otherwise does nothing
-let view = (model: model):Vdom.t<msg> =>
+let view = (model: model): Vdom.t<msg> =>
   div(
     list{},
     list{
