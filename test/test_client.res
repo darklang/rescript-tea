@@ -34,3 +34,7 @@ let http_task = {
   open Test_client_http_task
   main
 }
+let todo_app = {
+  open Main_todo_optimized
+  main
+}

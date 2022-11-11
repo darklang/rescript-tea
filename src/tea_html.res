@@ -715,7 +715,7 @@ module Events = {
   let onInput = (~key="", msg) => onInputOpt(~key, ev => Some(msg(ev)))
 
   let onCheckOpt = (~key="", msg) =>
-    onCB(~key, "check", (ev: Dom.event) => {
+    onCB(~key, "change", (ev: Dom.event) => {
       let element = Webapi.Dom.Event.target(ev) |> Webapi.Dom.EventTarget.unsafeAsElement
       switch Webapi.Dom.HtmlElement.ofElement(element) {
       | None => None

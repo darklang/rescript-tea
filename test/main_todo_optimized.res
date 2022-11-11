@@ -181,15 +181,22 @@ let viewEntry = (todo, ()) => {
         list{
           input'(
             list{
+              id("todo-" ++ todo.id->Js.Int.toString),
               class("toggle"),
               type'("checkbox"),
               checked(todo.completed),
-              onClick(Check(todo.id, !todo.completed)),
+              onCheck(v => Check(todo.id, v)),
             },
             list{},
           ),
-          label(list{onDoubleClick(EditingEntry(todo.id, true))}, list{text(todo.description)}),
-          button(list{class("destroy"), onClick(Delete(todo.id))}, list{}),
+          label(
+            list{
+              Html.Attributes.for'("todo-" ++ todo.id->Js.Int.toString),
+              onDoubleClick(EditingEntry(todo.id, true)),
+            },
+            list{text(todo.description)},
+          ),
+          button(list{class("destroy"), onClick(Delete(todo.id))}, list{"Delete"->text}),
         },
       ),
       input'(
@@ -226,11 +233,12 @@ let viewEntries = (visibility, entries) => {
     list{
       input'(
         list{
+          Html.Attributes.id("toggle-all"),
           Html.Attributes.class("toggle-all"),
           Html.Attributes.type'("checkbox"),
           Html.Attributes.name("toggle"),
           Html.Attributes.checked(allCompleted),
-          onClick(CheckAll(!allCompleted)),
+          onCheck(v => CheckAll(v)),
         },
         list{},
       ),
@@ -366,7 +374,7 @@ let infoFooter = () =>
 
 let view = model =>
   div(
-    list{Html.Attributes.class("todomvc-wrapper"), Html.Attributes.style("visibility", "hidden")},
+    list{Html.Attributes.class("todomvc-wrapper")},
     list{
       section(
         list{Html.Attributes.class("todoapp")},
